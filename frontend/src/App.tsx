@@ -1,5 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import AppShell from './components/AppShell'
+import LandingPage from './pages/LandingPage'
 import CommandCenter from './pages/CommandCenter'
 import AIWorkforce from './pages/AIWorkforce'
 import Departments from './pages/Departments'
@@ -8,11 +9,36 @@ import Approvals from './pages/Approvals'
 import Integrations from './pages/Integrations'
 import PlaceholderPage from './pages/Placeholder'
 
+/** Pre-/app module paths, kept working via redirects. */
+const LEGACY_PATHS = [
+  'ai-workforce',
+  'departments',
+  'tasks',
+  'approvals',
+  'integrations',
+  'crm-sales',
+  'marketing',
+  'finance',
+  'hr',
+  'projects',
+  'support',
+  'automations',
+  'analytics',
+  'marketplace',
+  'settings',
+  'creative-studio',
+  'engineering-studio',
+] as const
+
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<AppShell />}>
+        {/* Public marketing site */}
+        <Route path="/" element={<LandingPage />} />
+
+        {/* Application (Command Center + all modules) */}
+        <Route path="/app" element={<AppShell />}>
           <Route index element={<CommandCenter />} />
           <Route path="ai-workforce" element={<AIWorkforce />} />
           <Route path="departments" element={<Departments />} />
@@ -237,8 +263,19 @@ export default function App() {
             }
           />
 
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to="/app" replace />} />
         </Route>
+
+        {/* Legacy redirects: old flat module URLs keep working. */}
+        {LEGACY_PATHS.map((p) => (
+          <Route
+            key={p}
+            path={`/${p}`}
+            element={<Navigate to={`/app/${p}`} replace />}
+          />
+        ))}
+
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   )

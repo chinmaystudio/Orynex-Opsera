@@ -20,6 +20,14 @@ export default {
           500: '#8b5cf6',
           600: '#7c3aed',
         },
+        // Landing page palette (scoped to the public marketing page only;
+        // the dashboard keeps using the brand/slate tokens above).
+        paper: '#F8F8F6',
+        ink: '#171717',
+        muted: '#656565',
+        deep: '#243C74',
+        lavender: '#EAEAFF',
+        line: '#E8E7E3',
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-system', 'system-ui', 'sans-serif'],

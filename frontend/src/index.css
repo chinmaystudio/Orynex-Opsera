@@ -27,4 +27,46 @@
   .label {
     @apply mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500;
   }
+
+  /* Landing page buttons — extend the .btn-primary language (strong brand
+     blue, rounded corners, clear hierarchy) with the slightly larger
+     proportions used for marketing CTAs. Scoped to the landing page. */
+  .l-btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition duration-200 hover:-translate-y-px hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0;
+  }
+  .l-btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line bg-white px-5 py-2.5 text-sm font-medium text-ink transition duration-200 hover:-translate-y-px hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0;
+  }
+  .l-btn-on-dark {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-deep shadow-sm transition duration-200 hover:-translate-y-px hover:bg-lavender focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-deep active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+}
+
+@keyframes flow-dot {
+  0% {
+    left: 0;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    left: calc(100% - 6px);
+    opacity: 0;
+  }
+}
+
+@layer utilities {
+  .animate-flow-dot {
+    animation: flow-dot 2.8s ease-in-out infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-flow-dot {
+    animation: none;
+  }
 }

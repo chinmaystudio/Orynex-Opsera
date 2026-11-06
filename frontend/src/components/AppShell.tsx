@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import {
   BarChart3,
   Bell,
@@ -37,22 +37,22 @@ export interface ModuleDef {
 
 /** All 16 modules, in the order defined by the spec (§12 + §23). */
 export const MODULES: ModuleDef[] = [
-  { path: '/', label: 'Command Center', icon: Gauge },
-  { path: '/ai-workforce', label: 'AI Workforce', icon: Bot },
-  { path: '/departments', label: 'Departments', icon: Building2 },
-  { path: '/crm-sales', label: 'CRM & Sales', icon: Users },
-  { path: '/marketing', label: 'Marketing', icon: Megaphone },
-  { path: '/finance', label: 'Finance', icon: HandCoins },
-  { path: '/hr', label: 'Human Resources', icon: Users },
-  { path: '/projects', label: 'Projects & Operations', icon: KanbanSquare },
-  { path: '/support', label: 'Customer Support', icon: Headset },
-  { path: '/automations', label: 'Automations', icon: Workflow },
-  { path: '/analytics', label: 'Analytics', icon: BarChart3 },
-  { path: '/integrations', label: 'Integrations', icon: LayoutGrid },
-  { path: '/marketplace', label: 'Agent Marketplace', icon: Sparkles },
-  { path: '/settings', label: 'Settings', icon: Settings },
-  { path: '/creative-studio', label: 'Creative Studio', icon: Clapperboard },
-  { path: '/engineering-studio', label: 'Engineering Studio', icon: Code2 },
+  { path: '/app', label: 'Command Center', icon: Gauge },
+  { path: '/app/ai-workforce', label: 'AI Workforce', icon: Bot },
+  { path: '/app/departments', label: 'Departments', icon: Building2 },
+  { path: '/app/crm-sales', label: 'CRM & Sales', icon: Users },
+  { path: '/app/marketing', label: 'Marketing', icon: Megaphone },
+  { path: '/app/finance', label: 'Finance', icon: HandCoins },
+  { path: '/app/hr', label: 'Human Resources', icon: Users },
+  { path: '/app/projects', label: 'Projects & Operations', icon: KanbanSquare },
+  { path: '/app/support', label: 'Customer Support', icon: Headset },
+  { path: '/app/automations', label: 'Automations', icon: Workflow },
+  { path: '/app/analytics', label: 'Analytics', icon: BarChart3 },
+  { path: '/app/integrations', label: 'Integrations', icon: LayoutGrid },
+  { path: '/app/marketplace', label: 'Agent Marketplace', icon: Sparkles },
+  { path: '/app/settings', label: 'Settings', icon: Settings },
+  { path: '/app/creative-studio', label: 'Creative Studio', icon: Clapperboard },
+  { path: '/app/engineering-studio', label: 'Engineering Studio', icon: Code2 },
 ]
 
 function CommandBar() {
@@ -223,20 +223,26 @@ export default function AppShell() {
           collapsed ? 'w-16' : 'w-64'
         }`}
       >
-        <div className="flex h-16 items-center gap-2 border-b border-slate-100 px-4">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand-600 to-accent-600 text-sm font-bold text-white">
-            O
-          </div>
-          {!collapsed && (
-            <div className="min-w-0">
-              <p className="truncate text-sm font-semibold leading-tight text-slate-900">
-                OrynexOpsera
-              </p>
-              <p className="text-[11px] leading-tight text-slate-400">
-                Business Operating System
-              </p>
+        <div className="flex h-16 items-center border-b border-slate-100 px-4">
+          <Link
+            to="/"
+            className="flex min-w-0 items-center gap-2"
+            title="OrynexOpsera — back to the public site"
+          >
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand-600 to-accent-600 text-sm font-bold text-white">
+              O
             </div>
-          )}
+            {!collapsed && (
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold leading-tight text-slate-900">
+                  OrynexOpsera
+                </p>
+                <p className="text-[11px] leading-tight text-slate-400">
+                  Business Operating System
+                </p>
+              </div>
+            )}
+          </Link>
         </div>
 
         <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 py-3">
@@ -246,7 +252,7 @@ export default function AppShell() {
               <NavLink
                 key={mod.path}
                 to={mod.path}
-                end={mod.path === '/'}
+                end={mod.path === '/app'}
                 title={collapsed ? mod.label : undefined}
                 className={({ isActive }) =>
                   `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
@@ -262,7 +268,7 @@ export default function AppShell() {
             )
           })}
           <NavLink
-            to="/tasks"
+            to="/app/tasks"
             title={collapsed ? 'Tasks' : undefined}
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
@@ -276,7 +282,7 @@ export default function AppShell() {
             {!collapsed && <span className="truncate">Tasks</span>}
           </NavLink>
           <NavLink
-            to="/approvals"
+            to="/app/approvals"
             title={collapsed ? 'Approvals' : undefined}
             className={({ isActive }) =>
               `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
@@ -325,7 +331,7 @@ export default function AppShell() {
               placeholder="Global search…"
               aria-label="Global search"
               onKeyDown={(e) => {
-                if (e.key === 'Enter') navigate('/tasks')
+                if (e.key === 'Enter') navigate('/app/tasks')
               }}
             />
           </div>
@@ -341,7 +347,7 @@ export default function AppShell() {
               <Bell className="h-5 w-5" />
             </button>
             <button
-              onClick={() => navigate('/approvals')}
+              onClick={() => navigate('/app/approvals')}
               className="relative rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
               aria-label="Pending approvals"
               title="Pending approvals"
