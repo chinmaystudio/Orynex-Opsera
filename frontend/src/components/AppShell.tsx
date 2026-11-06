@@ -1,12 +1,20 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import {
+  Link,
+  NavLink,
+  Outlet,
+  useLocation,
+  useNavigate,
+} from 'react-router-dom'
 import {
   BarChart3,
   Bell,
   Bot,
+  Briefcase,
   Building2,
   CheckSquare,
   ChevronDown,
+  ChevronRight,
   Clapperboard,
   Code2,
   Gauge,
@@ -14,7 +22,9 @@ import {
   Headset,
   KanbanSquare,
   LayoutGrid,
+  LifeBuoy,
   Megaphone,
+  Menu,
   PanelLeftClose,
   PanelLeftOpen,
   Search,
@@ -28,12 +38,80 @@ import {
 import { api, BackendOfflineError } from '../lib/api'
 import type { CommandResponse } from '../lib/types'
 import { RiskBadge } from './ui'
+import GlobalSearch from './GlobalSearch'
 
 export interface ModuleDef {
   path: string
   label: string
   icon: typeof Gauge
 }
+
+export interface NavGroup {
+  label: string
+  items: ModuleDef[]
+}
+
+const LOGO_SRC = '/9f4ebccd-ad18-4fe6-ac83-73f22f9953f4.png'
+
+/**
+ * Grouped sidebar navigation (enterprise UI spec §4A). The same modules as
+ * before — same paths, same order within the product — organised into
+ * labelled groups instead of one continuous list.
+ */
+export const NAV_GROUPS: NavGroup[] = [
+  {
+    label: 'Workspace',
+    items: [
+      { path: '/app', label: 'Command Center', icon: Gauge },
+      { path: '/app/ai-workforce', label: 'AI Workforce', icon: Bot },
+      { path: '/app/departments', label: 'Departments', icon: Building2 },
+    ],
+  },
+  {
+    label: 'Business',
+    items: [
+      { path: '/app/crm-sales', label: 'CRM & Sales', icon: Users },
+      { path: '/app/marketing', label: 'Marketing', icon: Megaphone },
+      { path: '/app/finance', label: 'Finance', icon: HandCoins },
+      { path: '/app/hr', label: 'Human Resources', icon: Briefcase },
+      { path: '/app/support', label: 'Customer Support', icon: Headset },
+    ],
+  },
+  {
+    label: 'Operations',
+    items: [
+      {
+        path: '/app/projects',
+        label: 'Projects & Operations',
+        icon: KanbanSquare,
+      },
+      { path: '/app/tasks', label: 'Tasks', icon: CheckSquare },
+      { path: '/app/approvals', label: 'Approvals', icon: ShieldCheck },
+      { path: '/app/automations', label: 'Automations', icon: Workflow },
+    ],
+  },
+  {
+    label: 'Intelligence',
+    items: [
+      { path: '/app/analytics', label: 'Analytics', icon: BarChart3 },
+      { path: '/app/marketplace', label: 'Agent Marketplace', icon: Sparkles },
+    ],
+  },
+  {
+    label: 'Studios',
+    items: [
+      { path: '/app/creative-studio', label: 'Creative Studio', icon: Clapperboard },
+      { path: '/app/engineering-studio', label: 'Engineering Studio', icon: Code2 },
+    ],
+  },
+  {
+    label: 'Platform',
+    items: [
+      { path: '/app/integrations', label: 'Integrations', icon: LayoutGrid },
+      { path: '/app/settings', label: 'Settings', icon: Settings },
+    ],
+  },
+]
 
 /** All 16 modules, in the order defined by the spec (§12 + §23). */
 export const MODULES: ModuleDef[] = [
@@ -43,7 +121,7 @@ export const MODULES: ModuleDef[] = [
   { path: '/app/crm-sales', label: 'CRM & Sales', icon: Users },
   { path: '/app/marketing', label: 'Marketing', icon: Megaphone },
   { path: '/app/finance', label: 'Finance', icon: HandCoins },
-  { path: '/app/hr', label: 'Human Resources', icon: Users },
+  { path: '/app/hr', label: 'Human Resources', icon: Briefcase },
   { path: '/app/projects', label: 'Projects & Operations', icon: KanbanSquare },
   { path: '/app/support', label: 'Customer Support', icon: Headset },
   { path: '/app/automations', label: 'Automations', icon: Workflow },
@@ -54,6 +132,25 @@ export const MODULES: ModuleDef[] = [
   { path: '/app/creative-studio', label: 'Creative Studio', icon: Clapperboard },
   { path: '/app/engineering-studio', label: 'Engineering Studio', icon: Code2 },
 ]
+
+const ALL_NAV_ITEMS: ModuleDef[] = NAV_GROUPS.flatMap((g) => g.items)
+
+function currentModuleLabel(pathname: string): string {
+  const match = [...ALL_NAV_ITEMS]
+    .sort((a, b) => b.path.length - a.path.length)
+    .find(
+      (m) =>
+        pathname === m.path ||
+        (m.path !== '/app' && pathname.startsWith(`${m.path}/`)),
+    )
+  return match?.label ?? 'Command Center'
+}
+
+/* ------------------------------------------------------------------ */
+/* AI Command bar — behaviour unchanged from the previous shell: it    */
+/* POSTs to /api/v1/command, renders the returned plan, and states     */
+/* honestly when the backend is offline (nothing was executed).        */
+/* ------------------------------------------------------------------ */
 
 function CommandBar() {
   const [value, setValue] = useState('')
@@ -93,28 +190,28 @@ function CommandBar() {
         <input
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          placeholder='AI command — e.g. "Generate a sales performance report"'
+          placeholder="Ask OPRAQ to do something..."
           className="input pl-9 pr-24"
           aria-label="AI command bar"
         />
         <button
           type="submit"
           disabled={busy || !value.trim()}
-          className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-md bg-brand-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-brand-700 disabled:opacity-50"
+          className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-md bg-primary-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-primary-700 disabled:opacity-50"
         >
           {busy ? 'Planning…' : 'Run'}
         </button>
       </form>
 
       {open && (result || offline || error) && (
-        <div className="card absolute left-0 right-0 top-full z-40 mt-2 max-h-96 overflow-y-auto p-4">
+        <div className="card absolute left-0 right-0 top-full z-40 mt-2 max-h-96 overflow-y-auto p-4 shadow-popover">
           <div className="mb-2 flex items-start justify-between gap-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted">
               Execution plan
             </p>
             <button
               onClick={() => setOpen(false)}
-              className="rounded p-0.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+              className="rounded p-0.5 text-slate-400 hover:bg-appbg hover:text-ink"
               aria-label="Close plan"
             >
               <X className="h-4 w-4" />
@@ -137,25 +234,25 @@ function CommandBar() {
           {result && (
             <div>
               {result.summary && (
-                <p className="mb-3 text-sm text-slate-700">{result.summary}</p>
+                <p className="mb-3 text-sm text-ink">{result.summary}</p>
               )}
               {result.plan && result.plan.length > 0 ? (
                 <ol className="space-y-2">
                   {result.plan.map((step, i) => (
                     <li
                       key={i}
-                      className="flex items-start gap-3 rounded-lg bg-slate-50 px-3 py-2"
+                      className="flex items-start gap-3 rounded-[10px] bg-appbg px-3 py-2"
                     >
-                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-100 text-[11px] font-semibold text-brand-700">
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary-100 text-[11px] font-semibold text-primary-700">
                         {step.step ?? i + 1}
                       </span>
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm text-slate-800">
+                        <p className="text-sm text-ink">
                           {step.description ?? step.action ?? step.tool ?? 'Step'}
                         </p>
                         <div className="mt-1 flex flex-wrap items-center gap-2">
                           {step.tool && (
-                            <span className="rounded bg-white px-1.5 py-0.5 font-mono text-[11px] text-slate-500 ring-1 ring-slate-200">
+                            <span className="rounded bg-surface px-1.5 py-0.5 font-mono text-[11px] text-muted ring-1 ring-line">
                               {step.tool}
                             </span>
                           )}
@@ -173,11 +270,11 @@ function CommandBar() {
                   ))}
                 </ol>
               ) : (
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-muted">
                   The backend returned no plan steps for this command.
                 </p>
               )}
-              <p className="mt-3 border-t border-slate-100 pt-2 text-xs text-slate-400">
+              <p className="mt-3 border-t border-line pt-2 text-xs text-muted">
                 {result.executed
                   ? 'This command was executed by the backend. See execution history for details.'
                   : 'Plan only — nothing has been executed yet. Sensitive steps require approval before they run.'}
@@ -190,10 +287,192 @@ function CommandBar() {
   )
 }
 
+/* ------------------------------------------------------------------ */
+/* Sidebar content (shared by the desktop rail and the mobile drawer)  */
+/* ------------------------------------------------------------------ */
+
+function SidebarNav({
+  collapsed,
+  pendingApprovals,
+  onNavigate,
+}: {
+  collapsed: boolean
+  pendingApprovals: number | null
+  onNavigate?: () => void
+}) {
+  return (
+    <nav
+      className="sidebar-scroll flex-1 space-y-6 overflow-y-auto px-3 py-4"
+      aria-label="Primary"
+    >
+      {NAV_GROUPS.map((group) => (
+        <div key={group.label}>
+          {collapsed ? (
+            <div className="mx-2 mb-2 border-t border-line" aria-hidden />
+          ) : (
+            <p className="mb-1.5 px-2 text-[11px] font-semibold uppercase tracking-wider text-muted">
+              {group.label}
+            </p>
+          )}
+          <div className="space-y-0.5">
+            {group.items.map((mod) => {
+              const Icon = mod.icon
+              const showBadge =
+                mod.path === '/app/approvals' &&
+                pendingApprovals !== null &&
+                pendingApprovals > 0
+              return (
+                <NavLink
+                  key={mod.path}
+                  to={mod.path}
+                  end={mod.path === '/app'}
+                  onClick={onNavigate}
+                  title={collapsed ? mod.label : undefined}
+                  aria-label={mod.label}
+                  className={({ isActive }) =>
+                    `relative flex items-center gap-3 rounded-[10px] px-3 py-2 text-sm transition ${
+                      isActive
+                        ? 'bg-primary-50 font-medium text-primary-700 [&_svg]:text-primary-600'
+                        : 'text-slate-600 hover:bg-appbg hover:text-ink'
+                    } ${collapsed ? 'justify-center px-0' : ''}`
+                  }
+                >
+                  <Icon className="h-[18px] w-[18px] shrink-0 text-muted" />
+                  {!collapsed && <span className="truncate">{mod.label}</span>}
+                  {!collapsed && showBadge && (
+                    <span className="ml-auto rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">
+                      {pendingApprovals}
+                    </span>
+                  )}
+                  {collapsed && showBadge && (
+                    <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-amber-500" />
+                  )}
+                </NavLink>
+              )
+            })}
+          </div>
+        </div>
+      ))}
+    </nav>
+  )
+}
+
+function SidebarBottom({
+  collapsed,
+  onToggleCollapse,
+}: {
+  collapsed: boolean
+  onToggleCollapse?: () => void
+}) {
+  return (
+    <div className="space-y-1 border-t border-line p-3">
+      <NavLink
+        to="/app/settings"
+        title={collapsed ? 'Help & Documentation' : undefined}
+        aria-label="Help and documentation"
+        className="flex items-center gap-3 rounded-[10px] px-3 py-2 text-sm text-slate-600 transition hover:bg-appbg hover:text-ink"
+      >
+        <LifeBuoy className="h-[18px] w-[18px] shrink-0 text-muted" />
+        {!collapsed && (
+          <>
+            <span className="truncate">Help & Documentation</span>
+            <span className="ml-auto rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-muted ring-1 ring-inset ring-line">
+              Soon
+            </span>
+          </>
+        )}
+      </NavLink>
+
+      {!collapsed && (
+        <div className="rounded-[10px] bg-appbg px-3 py-2.5">
+          <p className="truncate text-xs font-medium text-ink">
+            Default Workspace
+          </p>
+          <p className="text-[11px] text-muted">1 workspace · Owner access</p>
+        </div>
+      )}
+
+      <div
+        className={`flex items-center gap-2.5 rounded-[10px] px-3 py-2 ${
+          collapsed ? 'justify-center px-0' : ''
+        }`}
+        title="Chinmay — Owner"
+      >
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary-100 text-xs font-semibold text-primary-700">
+          C
+        </div>
+        {!collapsed && (
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium leading-tight text-ink">
+              Chinmay
+            </p>
+            <p className="text-[11px] leading-tight text-muted">Owner</p>
+          </div>
+        )}
+      </div>
+
+      {onToggleCollapse && (
+        <button
+          onClick={onToggleCollapse}
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          title={collapsed ? 'Expand sidebar' : undefined}
+          className={`flex w-full items-center gap-3 rounded-[10px] px-3 py-2 text-sm text-muted transition hover:bg-appbg hover:text-ink ${
+            collapsed ? 'justify-center px-0' : ''
+          }`}
+        >
+          {collapsed ? (
+            <PanelLeftOpen className="h-[18px] w-[18px]" />
+          ) : (
+            <>
+              <PanelLeftClose className="h-[18px] w-[18px]" />
+              <span>Collapse</span>
+            </>
+          )}
+        </button>
+      )}
+    </div>
+  )
+}
+
+function LogoLink({ collapsed }: { collapsed: boolean }) {
+  return (
+    <Link
+      to="/"
+      className="flex min-w-0 items-center"
+      title="OrynexOpraq — back to the public site"
+      aria-label="OrynexOpraq — back to the public site"
+    >
+      {collapsed ? (
+        <span className="block h-9 w-9 shrink-0 overflow-hidden">
+          <img
+            src={LOGO_SRC}
+            alt="OrynexOpraq"
+            className="h-9 w-[108px] max-w-none object-cover object-left"
+          />
+        </span>
+      ) : (
+        <img
+          src={LOGO_SRC}
+          alt="OrynexOpraq"
+          className="h-10 w-auto max-w-[160px] object-contain"
+        />
+      )}
+    </Link>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/* Shell                                                               */
+/* ------------------------------------------------------------------ */
+
 export default function AppShell() {
   const [collapsed, setCollapsed] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const [notifOpen, setNotifOpen] = useState(false)
   const [pendingApprovals, setPendingApprovals] = useState<number | null>(null)
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     let cancelled = false
@@ -215,143 +494,159 @@ export default function AppShell() {
     }
   }, [])
 
+  /* Close the mobile drawer on navigation, and lock body scroll while open. */
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [location.pathname])
+
+  useEffect(() => {
+    if (!mobileOpen) return
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = prevOverflow
+    }
+  }, [mobileOpen])
+
+  const moduleLabel = currentModuleLabel(location.pathname)
+
   return (
-    <div className="flex min-h-screen">
-      {/* Sidebar */}
+    <div className="flex min-h-screen bg-appbg">
+      {/* Desktop sidebar */}
       <aside
-        className={`sticky top-0 flex h-screen shrink-0 flex-col border-r border-slate-200 bg-white transition-all ${
-          collapsed ? 'w-16' : 'w-64'
+        className={`sticky top-0 hidden h-screen shrink-0 flex-col border-r border-line bg-surface transition-[width] duration-200 lg:flex ${
+          collapsed ? 'w-[72px]' : 'w-[248px]'
         }`}
       >
-        <div className="flex h-16 items-center border-b border-slate-100 px-4">
-          <Link
-            to="/"
-            className="flex min-w-0 items-center"
-            title="OrynexOpraq — back to the public site"
-            aria-label="OrynexOpraq — back to the public site"
-          >
-            {collapsed ? (
-              <span className="block h-9 w-9 shrink-0 overflow-hidden">
-                <img
-                  src="/9f4ebccd-ad18-4fe6-ac83-73f22f9953f4.png"
-                  alt="OrynexOpraq"
-                  className="h-9 w-[108px] max-w-none object-cover object-left"
-                />
-              </span>
-            ) : (
-              <img
-                src="/9f4ebccd-ad18-4fe6-ac83-73f22f9953f4.png"
-                alt="OrynexOpraq"
-                className="h-10 w-auto max-w-[160px] object-contain"
-              />
-            )}
-          </Link>
+        <div className="flex h-16 items-center border-b border-line px-4">
+          <LogoLink collapsed={collapsed} />
         </div>
-
-        <nav className="flex-1 space-y-0.5 overflow-y-auto px-2 py-3">
-          {MODULES.map((mod) => {
-            const Icon = mod.icon
-            return (
-              <NavLink
-                key={mod.path}
-                to={mod.path}
-                end={mod.path === '/app'}
-                title={collapsed ? mod.label : undefined}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
-                    isActive
-                      ? 'bg-brand-50 font-medium text-brand-700'
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                  } ${collapsed ? 'justify-center px-0' : ''}`
-                }
-              >
-                <Icon className="h-[18px] w-[18px] shrink-0" />
-                {!collapsed && <span className="truncate">{mod.label}</span>}
-              </NavLink>
-            )
-          })}
-          <NavLink
-            to="/app/tasks"
-            title={collapsed ? 'Tasks' : undefined}
-            className={({ isActive }) =>
-              `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
-                isActive
-                  ? 'bg-brand-50 font-medium text-brand-700'
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-              } ${collapsed ? 'justify-center px-0' : ''}`
-            }
-          >
-            <CheckSquare className="h-[18px] w-[18px] shrink-0" />
-            {!collapsed && <span className="truncate">Tasks</span>}
-          </NavLink>
-          <NavLink
-            to="/app/approvals"
-            title={collapsed ? 'Approvals' : undefined}
-            className={({ isActive }) =>
-              `flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition ${
-                isActive
-                  ? 'bg-brand-50 font-medium text-brand-700'
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-              } ${collapsed ? 'justify-center px-0' : ''}`
-            }
-          >
-            <ShieldCheck className="h-[18px] w-[18px] shrink-0" />
-            {!collapsed && <span className="truncate">Approvals</span>}
-            {!collapsed &&
-              pendingApprovals !== null &&
-              pendingApprovals > 0 && (
-                <span className="ml-auto rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">
-                  {pendingApprovals}
-                </span>
-              )}
-          </NavLink>
-        </nav>
-
-        <div className="border-t border-slate-100 p-2">
-          <button
-            onClick={() => setCollapsed((c) => !c)}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-slate-500 transition hover:bg-slate-50 hover:text-slate-800"
-          >
-            {collapsed ? (
-              <PanelLeftOpen className="h-[18px] w-[18px]" />
-            ) : (
-              <>
-                <PanelLeftClose className="h-[18px] w-[18px]" />
-                <span>Collapse</span>
-              </>
-            )}
-          </button>
-        </div>
+        <SidebarNav collapsed={collapsed} pendingApprovals={pendingApprovals} />
+        <SidebarBottom
+          collapsed={collapsed}
+          onToggleCollapse={() => setCollapsed((c) => !c)}
+        />
       </aside>
+
+      {/* Mobile drawer */}
+      {mobileOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Navigation">
+          <button
+            aria-label="Close navigation"
+            onClick={() => setMobileOpen(false)}
+            className="absolute inset-0 h-full w-full cursor-default bg-ink/40"
+          />
+          <aside className="absolute left-0 top-0 flex h-full w-[280px] flex-col bg-surface shadow-popover">
+            <div className="flex h-16 items-center justify-between border-b border-line px-4">
+              <LogoLink collapsed={false} />
+              <button
+                onClick={() => setMobileOpen(false)}
+                aria-label="Close navigation"
+                className="focus-ring rounded-lg p-1.5 text-muted transition hover:bg-appbg hover:text-ink"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <SidebarNav
+              collapsed={false}
+              pendingApprovals={pendingApprovals}
+              onNavigate={() => setMobileOpen(false)}
+            />
+            <SidebarBottom collapsed={false} />
+          </aside>
+        </div>
+      )}
 
       {/* Main column */}
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-slate-200 bg-white/90 px-4 backdrop-blur sm:px-6">
-          <div className="relative hidden w-56 shrink-0 lg:block">
-            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input
-              className="input pl-9"
-              placeholder="Global search…"
-              aria-label="Global search"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') navigate('/app/tasks')
-              }}
-            />
-          </div>
+        <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-line bg-surface px-4 sm:px-6">
+          <button
+            onClick={() => setMobileOpen(true)}
+            aria-label="Open navigation"
+            className="focus-ring shrink-0 rounded-lg p-2 text-muted transition hover:bg-appbg hover:text-ink lg:hidden"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+
+          <nav
+            aria-label="Breadcrumb"
+            className="hidden shrink-0 items-center gap-1.5 text-sm md:flex"
+          >
+            <span className="font-semibold tracking-wide text-muted">OPRAQ</span>
+            <ChevronRight className="h-4 w-4 text-slate-300" />
+            <span className="truncate font-medium text-ink">{moduleLabel}</span>
+          </nav>
 
           <CommandBar />
 
-          <div className="ml-auto flex shrink-0 items-center gap-2">
+          <div className="ml-auto flex shrink-0 items-center gap-1.5 sm:gap-2">
             <button
-              className="relative rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
-              aria-label="Notifications"
-              title="Notifications — no notification feed is wired up in Phase 1"
+              onClick={() => setSearchOpen(true)}
+              aria-label="Search (Ctrl K)"
+              className="focus-ring hidden items-center gap-2 rounded-[10px] border border-line bg-surface px-3 py-2 text-sm text-muted transition hover:bg-appbg hover:text-ink md:flex"
             >
-              <Bell className="h-5 w-5" />
+              <Search className="h-4 w-4" />
+              <span className="hidden xl:inline">Search</span>
+              <kbd className="rounded border border-line bg-appbg px-1.5 py-0.5 text-[10px] font-medium text-muted">
+                Ctrl K
+              </kbd>
             </button>
             <button
+              onClick={() => setSearchOpen(true)}
+              aria-label="Search"
+              className="focus-ring rounded-lg p-2 text-muted transition hover:bg-appbg hover:text-ink md:hidden"
+            >
+              <Search className="h-5 w-5" />
+            </button>
+
+            <div className="relative">
+              <button
+                onClick={() => setNotifOpen((o) => !o)}
+                className="focus-ring relative rounded-lg p-2 text-muted transition hover:bg-appbg hover:text-ink"
+                aria-label="Notifications"
+                aria-expanded={notifOpen}
+                title="Notifications"
+              >
+                <Bell className="h-5 w-5" />
+              </button>
+              {notifOpen && (
+                <>
+                  <button
+                    aria-hidden
+                    tabIndex={-1}
+                    onClick={() => setNotifOpen(false)}
+                    className="fixed inset-0 z-40 h-full w-full cursor-default"
+                  />
+                  <div className="card absolute right-0 top-full z-50 mt-2 w-80 p-4 shadow-popover">
+                    <p className="text-sm font-semibold text-ink">
+                      Notifications
+                    </p>
+                    <p className="mt-1.5 text-sm text-muted">
+                      No notification feed is connected yet. Activity
+                      notifications will appear here once the backend emits
+                      them — nothing is being hidden from you.
+                    </p>
+                    <button
+                      onClick={() => {
+                        setNotifOpen(false)
+                        navigate('/app/approvals')
+                      }}
+                      className="btn-secondary mt-3 w-full justify-center"
+                    >
+                      <ShieldCheck className="h-4 w-4" />
+                      Review approvals
+                      {pendingApprovals !== null && pendingApprovals > 0
+                        ? ` (${pendingApprovals} pending)`
+                        : ''}
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <button
               onClick={() => navigate('/app/approvals')}
-              className="relative rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800"
+              className="focus-ring relative rounded-lg p-2 text-muted transition hover:bg-appbg hover:text-ink"
               aria-label="Pending approvals"
               title="Pending approvals"
             >
@@ -362,35 +657,44 @@ export default function AppShell() {
                 </span>
               )}
             </button>
-            <button className="hidden items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 sm:flex">
+
+            <button className="focus-ring hidden items-center gap-1.5 rounded-[10px] border border-line px-3 py-2 text-sm font-medium text-ink transition hover:bg-appbg sm:flex">
               Default Workspace
-              <ChevronDown className="h-4 w-4 text-slate-400" />
+              <ChevronDown className="h-4 w-4 text-muted" />
             </button>
-            <div className="flex items-center gap-2 pl-1">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700">
+
+            <div
+              className="flex items-center gap-2 pl-1"
+              title="Chinmay — Owner"
+            >
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-700">
                 C
               </div>
               <div className="hidden xl:block">
-                <p className="text-sm font-medium leading-tight text-slate-800">
+                <p className="text-sm font-medium leading-tight text-ink">
                   Chinmay
                 </p>
-                <p className="text-[11px] leading-tight text-slate-400">
-                  Owner
-                </p>
+                <p className="text-[11px] leading-tight text-muted">Owner</p>
               </div>
             </div>
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6">
+        <main className="w-full flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
           <Outlet />
         </main>
 
-        <footer className="border-t border-slate-200 bg-white px-6 py-3 text-center text-xs text-slate-400">
+        <footer className="border-t border-line bg-surface px-6 py-3 text-center text-xs text-muted">
           OrynexOpraq — part of the ORYNEX ecosystem. OrynexAegis provides the
           Agent OS; ORYNEX CORE connects everything.
         </footer>
       </div>
+
+      <GlobalSearch
+        open={searchOpen}
+        onOpen={() => setSearchOpen(true)}
+        onClose={() => setSearchOpen(false)}
+      />
     </div>
   )
 }

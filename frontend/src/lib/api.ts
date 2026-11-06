@@ -3,8 +3,13 @@ import type {
   ApprovalRequest,
   BusinessTask,
   CommandResponse,
+  Customer,
   Department,
+  Employee,
+  Lead,
+  Organization,
   Overview,
+  OverviewDetail,
 } from './types'
 
 const API_BASE: string =
@@ -56,8 +61,11 @@ export const api = {
   },
 
   async getAgents(): Promise<Agent[]> {
+    // The backend returns an envelope { presets, installed }. This method
+    // returns the INSTALLED agents (organization-scoped ai_agents records);
+    // the preset registry lives in lib/presets.ts.
     const data = await request<unknown>('/api/v1/agents')
-    return asList<Agent>(data, ['agents', 'items', 'results'])
+    return asList<Agent>(data, ['installed', 'agents', 'items', 'results'])
   },
 
   async getDepartments(): Promise<Department[]> {
@@ -96,6 +104,46 @@ export const api = {
       method: 'PATCH',
       body: JSON.stringify({ status: decision }),
     })
+  },
+
+  /** Full nested overview payload (totals / pipeline / finance + source note). */
+  async getOverviewDetail(): Promise<OverviewDetail> {
+    return request<OverviewDetail>('/api/v1/overview')
+  },
+
+  async getOrganizations(): Promise<Organization[]> {
+    const data = await request<unknown>('/api/v1/organizations')
+    return asList<Organization>(data, ['organizations', 'items', 'results'])
+  },
+
+  async getLeads(): Promise<Lead[]> {
+    const data = await request<unknown>('/api/v1/leads')
+    return asList<Lead>(data, ['leads', 'items', 'results'])
+  },
+
+  async createLead(lead: {
+    organization_id: string
+    name: string
+    company?: string
+    email?: string
+    source?: string
+    stage?: string
+    value?: number
+  }): Promise<Lead> {
+    return request<Lead>('/api/v1/leads', {
+      method: 'POST',
+      body: JSON.stringify(lead),
+    })
+  },
+
+  async getCustomers(): Promise<Customer[]> {
+    const data = await request<unknown>('/api/v1/customers')
+    return asList<Customer>(data, ['customers', 'items', 'results'])
+  },
+
+  async getEmployees(): Promise<Employee[]> {
+    const data = await request<unknown>('/api/v1/employees')
+    return asList<Employee>(data, ['employees', 'items', 'results'])
   },
 
   async postCommand(command: string): Promise<CommandResponse> {

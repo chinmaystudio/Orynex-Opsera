@@ -1,35 +1,117 @@
-import { AlertTriangle, Inbox, Loader2 } from 'lucide-react'
-import type { ReactNode } from 'react'
+import {
+  AlertTriangle,
+  Inbox,
+  Loader2,
+  Search,
+  X,
+  type LucideIcon,
+} from 'lucide-react'
+import {
+  useEffect,
+  type FormEvent,
+  type ReactNode,
+} from 'react'
+
+/* ------------------------------------------------------------------ */
+/* PageHeader                                                          */
+/* ------------------------------------------------------------------ */
 
 export function PageHeader({
   title,
   description,
+  subtitle,
+  actions,
   children,
 }: {
   title: string
+  /** Legacy prop name used by existing pages. */
   description?: string
+  /** Preferred prop name from the enterprise UI spec. */
+  subtitle?: string
+  actions?: ReactNode
+  /** Legacy: pages pass action buttons as children. */
   children?: ReactNode
 }) {
+  const text = subtitle ?? description
+  const right = actions ?? children
   return (
     <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+        <h1 className="text-2xl font-semibold tracking-tight text-ink">
           {title}
         </h1>
-        {description && (
-          <p className="mt-1 max-w-2xl text-sm text-slate-500">{description}</p>
-        )}
+        {text && <p className="mt-1 max-w-2xl text-sm text-muted">{text}</p>}
       </div>
-      {children}
+      {right}
     </div>
   )
 }
 
+/* ------------------------------------------------------------------ */
+/* Loading / empty / error states                                      */
+/* ------------------------------------------------------------------ */
+
 export function LoadingState({ label = 'Loading…' }: { label?: string }) {
   return (
-    <div className="card flex items-center justify-center gap-3 px-6 py-14 text-sm text-slate-500">
-      <Loader2 className="h-5 w-5 animate-spin text-brand-500" />
+    <div className="card flex items-center justify-center gap-3 px-6 py-14 text-sm text-muted">
+      <Loader2 className="h-5 w-5 animate-spin text-primary-500" />
       {label}
+    </div>
+  )
+}
+
+export function LoadingSkeleton({
+  variant = 'rows',
+  count = 4,
+}: {
+  variant?: 'rows' | 'cards' | 'table'
+  count?: number
+}) {
+  if (variant === 'cards') {
+    return (
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3" aria-hidden>
+        {Array.from({ length: count }).map((_, i) => (
+          <div key={i} className="card p-5">
+            <div className="skeleton h-10 w-10 rounded-[10px]" />
+            <div className="skeleton mt-4 h-4 w-2/3" />
+            <div className="skeleton mt-2 h-3 w-full" />
+            <div className="skeleton mt-2 h-3 w-5/6" />
+          </div>
+        ))}
+      </div>
+    )
+  }
+  if (variant === 'table') {
+    return (
+      <div className="card overflow-hidden" aria-hidden>
+        <div className="border-b border-line bg-appbg px-4 py-3">
+          <div className="skeleton h-3 w-1/3" />
+        </div>
+        {Array.from({ length: count }).map((_, i) => (
+          <div
+            key={i}
+            className="flex items-center gap-4 border-b border-line px-4 py-3 last:border-0"
+          >
+            <div className="skeleton h-3 flex-1" />
+            <div className="skeleton h-3 w-24" />
+            <div className="skeleton h-3 w-16" />
+          </div>
+        ))}
+      </div>
+    )
+  }
+  return (
+    <div className="space-y-3" aria-hidden>
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} className="card flex items-center gap-4 px-4 py-3">
+          <div className="skeleton h-9 w-9 shrink-0 rounded-[10px]" />
+          <div className="min-w-0 flex-1">
+            <div className="skeleton h-3.5 w-1/2" />
+            <div className="skeleton mt-2 h-3 w-3/4" />
+          </div>
+          <div className="skeleton h-5 w-16 shrink-0 rounded-full" />
+        </div>
+      ))}
     </div>
   )
 }
@@ -37,17 +119,24 @@ export function LoadingState({ label = 'Loading…' }: { label?: string }) {
 export function EmptyState({
   title,
   description,
+  icon: Icon = Inbox,
+  action,
+  children,
 }: {
   title: string
   description?: string
+  icon?: LucideIcon
+  action?: ReactNode
+  children?: ReactNode
 }) {
   return (
     <div className="card flex flex-col items-center justify-center px-6 py-14 text-center">
-      <Inbox className="mb-3 h-8 w-8 text-slate-300" />
-      <p className="text-sm font-medium text-slate-700">{title}</p>
+      <Icon className="mb-3 h-8 w-8 text-slate-300" />
+      <p className="text-sm font-medium text-ink">{title}</p>
       {description && (
-        <p className="mt-1 max-w-md text-sm text-slate-500">{description}</p>
+        <p className="mt-1 max-w-md text-sm text-muted">{description}</p>
       )}
+      {(action ?? children) && <div className="mt-4">{action ?? children}</div>}
     </div>
   )
 }
@@ -62,11 +151,13 @@ export function ErrorState({
   onRetry?: () => void
 }) {
   return (
-    <div className="card flex flex-col items-center justify-center border-amber-200 bg-amber-50 px-6 py-14 text-center">
-      <AlertTriangle className="mb-3 h-8 w-8 text-amber-500" />
-      <p className="text-sm font-medium text-slate-800">{title}</p>
+    <div className="card flex flex-col items-center justify-center px-6 py-14 text-center">
+      <span className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-amber-50 ring-1 ring-amber-100">
+        <AlertTriangle className="h-5 w-5 text-warning" />
+      </span>
+      <p className="text-sm font-medium text-ink">{title}</p>
       {description && (
-        <p className="mt-1 max-w-md text-sm text-slate-600">{description}</p>
+        <p className="mt-1 max-w-md text-sm text-muted">{description}</p>
       )}
       {onRetry && (
         <button className="btn-secondary mt-4" onClick={onRetry}>
@@ -76,6 +167,10 @@ export function ErrorState({
     </div>
   )
 }
+
+/* ------------------------------------------------------------------ */
+/* Badges                                                              */
+/* ------------------------------------------------------------------ */
 
 const RISK_STYLES: Record<string, string> = {
   low: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
@@ -98,7 +193,7 @@ export function RiskBadge({ level }: { level: string }) {
 const STATUS_STYLES: Record<string, string> = {
   pending: 'bg-slate-100 text-slate-600 ring-slate-200',
   assigned: 'bg-sky-50 text-sky-700 ring-sky-200',
-  in_progress: 'bg-brand-50 text-brand-700 ring-brand-200',
+  in_progress: 'bg-primary-50 text-primary-700 ring-primary-200',
   waiting_approval: 'bg-amber-50 text-amber-700 ring-amber-200',
   blocked: 'bg-red-50 text-red-700 ring-red-200',
   completed: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
@@ -108,6 +203,11 @@ const STATUS_STYLES: Record<string, string> = {
   active: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
   idle: 'bg-slate-100 text-slate-600 ring-slate-200',
   not_configured: 'bg-slate-100 text-slate-600 ring-slate-200',
+  // Risk levels, so StatusBadge can render risk values too (spec §25).
+  low: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+  medium: 'bg-sky-50 text-sky-700 ring-sky-200',
+  high: 'bg-amber-50 text-amber-700 ring-amber-200',
+  critical: 'bg-red-50 text-red-700 ring-red-200',
 }
 
 export function StatusBadge({ status }: { status: string }) {
@@ -121,6 +221,116 @@ export function StatusBadge({ status }: { status: string }) {
     </span>
   )
 }
+
+/* ------------------------------------------------------------------ */
+/* FilterBar                                                           */
+/* ------------------------------------------------------------------ */
+
+export function FilterBar({
+  search,
+  onSearchChange,
+  searchPlaceholder = 'Search…',
+  onSearchSubmit,
+  children,
+}: {
+  search?: string
+  onSearchChange?: (value: string) => void
+  searchPlaceholder?: string
+  onSearchSubmit?: () => void
+  children?: ReactNode
+}) {
+  function submit(e: FormEvent) {
+    e.preventDefault()
+    onSearchSubmit?.()
+  }
+  return (
+    <div className="mb-4 flex flex-wrap items-center gap-2">
+      {onSearchChange && (
+        <form onSubmit={submit} className="relative min-w-52 flex-1 sm:max-w-xs">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted" />
+          <input
+            value={search ?? ''}
+            onChange={(e) => onSearchChange(e.target.value)}
+            placeholder={searchPlaceholder}
+            aria-label={searchPlaceholder}
+            className="input pl-9"
+          />
+        </form>
+      )}
+      {children && (
+        <div className="flex flex-wrap items-center gap-2">{children}</div>
+      )}
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/* DetailInspector — right slide-over panel                            */
+/* ------------------------------------------------------------------ */
+
+export function DetailInspector({
+  open,
+  title,
+  subtitle,
+  onClose,
+  children,
+}: {
+  open: boolean
+  title: string
+  subtitle?: string
+  onClose: () => void
+  children?: ReactNode
+}) {
+  useEffect(() => {
+    if (!open) return
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', onKey)
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = prevOverflow
+    }
+  }, [open, onClose])
+
+  if (!open) return null
+
+  return (
+    <div className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label={title}>
+      <button
+        aria-label="Close panel"
+        onClick={onClose}
+        className="absolute inset-0 h-full w-full cursor-default bg-ink/30"
+      />
+      <aside className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-surface shadow-popover">
+        <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
+          <div className="min-w-0">
+            <h2 className="truncate text-base font-semibold text-ink">
+              {title}
+            </h2>
+            {subtitle && (
+              <p className="mt-0.5 truncate text-sm text-muted">{subtitle}</p>
+            )}
+          </div>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="focus-ring rounded-lg p-1.5 text-muted transition hover:bg-appbg hover:text-ink"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto px-5 py-4">{children}</div>
+      </aside>
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
+/* Formatting helpers                                                  */
+/* ------------------------------------------------------------------ */
 
 export function formatMoney(value: number | undefined): string {
   if (value === undefined || value === null || Number.isNaN(value)) return '—'

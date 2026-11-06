@@ -7,30 +7,34 @@
     font-family: Inter, ui-sans-system, system-ui, sans-serif;
   }
   body {
-    @apply bg-slate-100 text-slate-800 antialiased;
+    @apply bg-appbg text-ink antialiased;
   }
 }
 
 @layer components {
   .card {
-    @apply rounded-xl border border-slate-200 bg-white shadow-card;
+    @apply rounded-card border border-line bg-surface shadow-card;
   }
   .btn-primary {
-    @apply inline-flex items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center gap-2 rounded-[10px] bg-primary-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-secondary {
-    @apply inline-flex items-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center gap-2 rounded-[10px] border border-line bg-surface px-4 py-2 text-sm font-medium text-ink transition hover:bg-appbg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .input {
-    @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 placeholder-slate-400 outline-none transition focus:border-brand-500 focus:ring-2 focus:ring-brand-100;
+    @apply w-full rounded-[10px] border border-line bg-surface px-3 py-2 text-sm text-ink outline-none transition placeholder:text-muted/70 focus:border-primary-500 focus:ring-2 focus:ring-primary-100;
   }
   .label {
-    @apply mb-1 block text-xs font-medium uppercase tracking-wide text-slate-500;
+    @apply mb-1 block text-xs font-medium uppercase tracking-wide text-muted;
+  }
+  /* Consistent keyboard-focus ring for interactive elements. */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1;
   }
 
-  /* Landing page buttons — extend the .btn-primary language (strong brand
-     blue, rounded corners, clear hierarchy) with the slightly larger
-     proportions used for marketing CTAs. Scoped to the landing page. */
+  /* Landing page buttons — extend the .btn-primary language with the
+     slightly larger proportions used for marketing CTAs. Scoped to the
+     landing page; their primary now resolves to the shared #6D3CEB. */
   .l-btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition duration-200 hover:-translate-y-px hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0;
   }
@@ -39,6 +43,50 @@
   }
   .l-btn-on-dark {
     @apply inline-flex items-center justify-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-deep shadow-sm transition duration-200 hover:-translate-y-px hover:bg-lavender focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-deep active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+}
+
+/* Loading skeleton shimmer (used by LoadingSkeleton in components/ui). */
+@keyframes skeleton-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@layer utilities {
+  .skeleton {
+    @apply relative overflow-hidden rounded-md bg-slate-200/70;
+  }
+  .skeleton::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.55),
+      transparent
+    );
+    animation: skeleton-shimmer 1.6s infinite;
+  }
+  /* Slim, unobtrusive scrollbar for the app sidebar's independent scroll. */
+  .sidebar-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+  .sidebar-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+  .sidebar-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .sidebar-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 9999px;
   }
 }
 
@@ -67,6 +115,9 @@
 
 @media (prefers-reduced-motion: reduce) {
   .animate-flow-dot {
+    animation: none;
+  }
+  .skeleton::after {
     animation: none;
   }
 }
