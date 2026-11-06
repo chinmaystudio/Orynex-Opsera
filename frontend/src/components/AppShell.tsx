@@ -233,14 +233,14 @@ export default function AppShell() {
             {collapsed ? (
               <span className="block h-9 w-9 shrink-0 overflow-hidden">
                 <img
-                  src="/opraq-logo.png"
+                  src="/dd764246-7114-4e9e-84b9-d52d9ab8fbd1.png"
                   alt="OrynexOpraq"
                   className="h-9 w-[108px] max-w-none object-cover object-left"
                 />
               </span>
             ) : (
               <img
-                src="/opraq-logo.png"
+                src="/dd764246-7114-4e9e-84b9-d52d9ab8fbd1.png"
                 alt="OrynexOpraq"
                 className="h-10 w-auto max-w-[150px] object-contain"
               />
