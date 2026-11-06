@@ -30,7 +30,7 @@ export default function PlaceholderPage({
               Scheduled for {phase}
             </h2>
             <p className="mt-1 max-w-2xl text-sm leading-relaxed text-slate-600">
-              This module is part of the OrynexOpsera roadmap but is not built
+              This module is part of the OrynexOpraq roadmap but is not built
               yet. Phase 1 delivers the foundation: app shell, Command Center,
               AI Workforce registry, departments, tasks, approvals and the
               integration inventory. Rather than showing mock data, this page

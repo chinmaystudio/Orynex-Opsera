@@ -226,21 +226,24 @@ export default function AppShell() {
         <div className="flex h-16 items-center border-b border-slate-100 px-4">
           <Link
             to="/"
-            className="flex min-w-0 items-center gap-2"
-            title="OrynexOpsera — back to the public site"
+            className="flex min-w-0 items-center"
+            title="OrynexOpraq — back to the public site"
+            aria-label="OrynexOpraq — back to the public site"
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand-600 to-accent-600 text-sm font-bold text-white">
-              O
-            </div>
-            {!collapsed && (
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold leading-tight text-slate-900">
-                  OrynexOpsera
-                </p>
-                <p className="text-[11px] leading-tight text-slate-400">
-                  Business Operating System
-                </p>
-              </div>
+            {collapsed ? (
+              <span className="block h-9 w-9 shrink-0 overflow-hidden">
+                <img
+                  src="/opraq-logo.png"
+                  alt="OrynexOpraq"
+                  className="h-9 w-[108px] max-w-none object-cover object-left"
+                />
+              </span>
+            ) : (
+              <img
+                src="/opraq-logo.png"
+                alt="OrynexOpraq"
+                className="h-10 w-auto max-w-[150px] object-contain"
+              />
             )}
           </Link>
         </div>
@@ -384,7 +387,7 @@ export default function AppShell() {
         </main>
 
         <footer className="border-t border-slate-200 bg-white px-6 py-3 text-center text-xs text-slate-400">
-          OrynexOpsera — part of the ORYNEX ecosystem. OrynexAegis provides the
+          OrynexOpraq — part of the ORYNEX ecosystem. OrynexAegis provides the
           Agent OS; ORYNEX CORE connects everything.
         </footer>
       </div>

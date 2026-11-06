@@ -14,7 +14,7 @@ export default function FinalCTA() {
         </p>
         <div className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link to="/app" className="l-btn-on-dark w-full sm:w-auto">
-            Launch OrynexOpsera
+            Launch OrynexOpraq
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link

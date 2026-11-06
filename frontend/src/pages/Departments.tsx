@@ -40,7 +40,7 @@ export default function Departments() {
         <>
           <ErrorState
             title="Backend offline"
-            description="Department records could not be loaded. The department workspaces defined for OrynexOpsera are listed below for reference — counts and membership appear once the backend is running."
+            description="Department records could not be loaded. The department workspaces defined for OrynexOpraq are listed below for reference — counts and membership appear once the backend is running."
             onRetry={reload}
           />
           <DepartmentGrid departments={KNOWN_DEPARTMENTS} referenceOnly />
@@ -59,7 +59,7 @@ export default function Departments() {
         <>
           <EmptyState
             title="No departments created yet"
-            description="Your organization has no department records yet. The standard OrynexOpsera departments are:"
+            description="Your organization has no department records yet. The standard OrynexOpraq departments are:"
           />
           <DepartmentGrid departments={KNOWN_DEPARTMENTS} referenceOnly />
         </>

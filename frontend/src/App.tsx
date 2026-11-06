@@ -160,7 +160,7 @@ export default function App() {
               <PlaceholderPage
                 title="Automations"
                 phase="Phase 4"
-                description="The OrynexAegis automation center, embedded in Opsera."
+                description="The OrynexAegis automation center, embedded in Opraq."
                 features={[
                   'Visual workflow builder with triggers and conditions',
                   'AI agent, API and MCP tool nodes',

@@ -64,7 +64,7 @@ export default function WorkforceSection() {
             Build your team beyond human limits.
           </h2>
           <p className="mt-5 leading-relaxed text-muted">
-            An AI employee in Opsera is not a chatbot window. It has a role, a
+            An AI employee in Opraq is not a chatbot window. It has a role, a
             department, a manager, its own tools and memory — and a hard set
             of things it is not allowed to do without you.
           </p>

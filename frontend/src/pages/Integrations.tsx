@@ -95,7 +95,7 @@ export default function Integrations() {
 
       <p className="mt-6 text-xs leading-relaxed text-slate-400">
         Custom MCP servers can be registered by administrators once the MCP
-        client ships in Phase 4. OrynexOpsera's own MCP server (20 tools,
+        client ships in Phase 4. OrynexOpraq's own MCP server (20 tools,
         OAuth-scoped, org-isolated, audited) also ships in Phase 4. Source:
         docs/INTEGRATION_INVENTORY.md.
       </p>

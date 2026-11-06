@@ -1,4 +1,4 @@
-# OrynexOpsera — Frontend (Phase 1)
+# OrynexOpraq — Frontend (Phase 1)
 
 React + Vite + TypeScript + Tailwind CSS v3 + lucide-react + react-router-dom.
 
@@ -13,7 +13,7 @@ npm run preview    # serve the production build
 
 ## Configuration
 
-The app talks to the OrynexOpsera FastAPI backend via `VITE_API_BASE_URL`
+The app talks to the OrynexOpraq FastAPI backend via `VITE_API_BASE_URL`
 (see `.env.example`); it defaults to `http://localhost:8000`.
 
 Expected backend endpoints:

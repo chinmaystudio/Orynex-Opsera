@@ -54,7 +54,7 @@ export default function CommandCenter() {
     <div>
       <PageHeader
         title="Command Center"
-        description="Executive overview of your business, computed live from the OrynexOpsera backend. Figures reflect only data actually recorded in the system."
+        description="Executive overview of your business, computed live from the OrynexOpraq backend. Figures reflect only data actually recorded in the system."
       />
 
       {loading && <LoadingState label="Loading business overview…" />}
@@ -62,7 +62,7 @@ export default function CommandCenter() {
       {!loading && offline && (
         <ErrorState
           title="Backend offline"
-          description="The overview endpoint could not be reached, so no metrics are shown. Start the OrynexOpsera backend (default http://localhost:8000) and retry. No values are fabricated while offline."
+          description="The overview endpoint could not be reached, so no metrics are shown. Start the OrynexOpraq backend (default http://localhost:8000) and retry. No values are fabricated while offline."
           onRetry={reload}
         />
       )}

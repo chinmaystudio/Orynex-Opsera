@@ -29,7 +29,7 @@ export const STORY_SCENES: SceneNarrative[] = [
   },
   {
     icon: ClipboardList,
-    title: 'Opsera plans the work',
+    title: 'Opraq plans the work',
     body: 'The assistant breaks your request into concrete steps against your real workspace: which records, which clients, which calendars.',
   },
   {
@@ -155,7 +155,7 @@ export default function PhoneStory() {
  */
 export function PhoneStoryMobileFallback() {
   return (
-    <section className="lg:hidden" aria-label="How Opsera works">
+    <section className="lg:hidden" aria-label="How Opraq works">
       <div className="mx-auto w-full max-w-6xl px-5 py-16 sm:px-8">
         <p className="text-xs font-semibold uppercase tracking-[0.18em] text-brand-600">
           See how it works

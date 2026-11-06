@@ -19,7 +19,7 @@ const COLUMNS: Array<{
     links: [
       { label: 'OrynexNeuroclass' },
       { label: 'OrynexLaunchpad' },
-      { label: 'OrynexOpsera', to: '/' },
+      { label: 'OrynexOpraq', to: '/' },
       { label: 'OrynexAegis' },
     ],
   },
@@ -83,7 +83,7 @@ export default function Footer() {
           <div className="md:col-span-1" />
         </div>
         <div className="mt-12 flex flex-col gap-2 border-t border-line pt-6 text-xs text-muted sm:flex-row sm:items-center sm:justify-between">
-          <p>OrynexOpsera — part of the ORYNEX ecosystem.</p>
+          <p>OrynexOpraq — part of the ORYNEX ecosystem.</p>
           <p>Human approval for high-risk actions, by design.</p>
         </div>
       </div>

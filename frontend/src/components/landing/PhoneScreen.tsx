@@ -73,7 +73,7 @@ function AssistantHeader() {
       </span>
       <div>
         <p className="text-[12.5px] font-semibold leading-tight text-ink">
-          Opsera Assistant
+          Opraq Assistant
         </p>
         <p className="text-[10px] leading-tight text-emerald-600">
           Connected to your workspace
@@ -143,7 +143,7 @@ function Scene1({ sub }: { sub: number }) {
             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-lavender text-[9px] font-bold text-brand-700">
               O
             </span>
-            Opsera Assistant received your command
+            Opraq Assistant received your command
           </div>
         )}
       </div>
@@ -424,7 +424,7 @@ function Scene5({ sub }: { sub: number }) {
       </p>
       <p className="mt-1.5 text-[11.5px] leading-relaxed text-muted">
         Messages are drafted and meetings are matched to your calendar. Review
-        them, or approve and let Opsera schedule everything.
+        them, or approve and let Opraq schedule everything.
       </p>
       <div className="mt-4 space-y-2 rounded-xl border border-line bg-paper px-3.5 py-3 text-[11.5px] text-ink">
         <p className="flex justify-between">

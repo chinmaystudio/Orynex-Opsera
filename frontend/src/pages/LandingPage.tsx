@@ -6,8 +6,6 @@ import PhoneStory, {
 import CapabilitiesSection from '../components/landing/CapabilitiesSection'
 import WorkforceSection from '../components/landing/WorkforceSection'
 import AutomationSection from '../components/landing/AutomationSection'
-import IntegrationsSection from '../components/landing/IntegrationsSection'
-import SecuritySection from '../components/landing/SecuritySection'
 import FinalCTA from '../components/landing/FinalCTA'
 import Footer from '../components/landing/Footer'
 
@@ -28,8 +26,6 @@ export default function LandingPage() {
         <CapabilitiesSection />
         <WorkforceSection />
         <AutomationSection />
-        <IntegrationsSection />
-        <SecuritySection />
         <FinalCTA />
       </main>
       <Footer />

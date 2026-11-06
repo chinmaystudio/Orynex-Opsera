@@ -25,12 +25,12 @@ export default function AutomationSection() {
             Automation
           </p>
           <h2 className="mt-4 text-4xl font-semibold tracking-tight">
-            Describe the work. Let Opsera coordinate it.
+            Describe the work. Let Opraq coordinate it.
           </h2>
           <p className="mt-4 text-lg leading-relaxed text-white/70">
             “When a new customer registers, research their company, assign a
             sales rep, send a welcome email and create a follow-up.” Say it
-            once — Opsera turns it into an editable workflow you inspect,
+            once — Opraq turns it into an editable workflow you inspect,
             test and approve before it ever runs.
           </p>
         </div>

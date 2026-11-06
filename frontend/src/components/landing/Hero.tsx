@@ -20,12 +20,12 @@ export default function Hero() {
             </h1>
             <p className="mt-7 max-w-xl text-lg leading-relaxed text-muted">
               Bring your people, AI employees and business tools together.
-              OrynexOpsera helps your company plan, execute and automate work
+              OrynexOpraq helps your company plan, execute and automate work
               from one connected platform.
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link to="/app" className="l-btn-primary">
-                Start with Opsera
+                Start with Opraq
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <a href="#story" className="l-btn-secondary">
