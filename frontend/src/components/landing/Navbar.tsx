@@ -3,13 +3,11 @@ import { ArrowRight } from 'lucide-react'
 
 export function Wordmark() {
   return (
-    <span className="inline-flex items-center rounded-lg bg-[#171717] px-2.5 py-1.5">
-      <img
-        src="/dd764246-7114-4e9e-84b9-d52d9ab8fbd1.png"
-        alt="OrynexOpraq"
-        className="h-7 w-auto max-w-[150px] object-contain sm:h-8 sm:max-w-[170px]"
-      />
-    </span>
+    <img
+      src="/9f4ebccd-ad18-4fe6-ac83-73f22f9953f4.png"
+      alt="OrynexOpraq"
+      className="h-9 w-auto max-w-[160px] object-contain sm:h-10 sm:max-w-[180px]"
+    />
   )
 }
 
