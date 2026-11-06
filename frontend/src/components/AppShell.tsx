@@ -231,19 +231,21 @@ export default function AppShell() {
             aria-label="OrynexOpraq — back to the public site"
           >
             {collapsed ? (
-              <span className="block h-9 w-9 shrink-0 overflow-hidden">
+              <span className="flex h-9 w-9 shrink-0 items-center overflow-hidden rounded-lg bg-[#171717] pl-1">
                 <img
                   src="/dd764246-7114-4e9e-84b9-d52d9ab8fbd1.png"
                   alt="OrynexOpraq"
-                  className="h-9 w-[108px] max-w-none object-cover object-left"
+                  className="h-7 w-[84px] max-w-none object-cover object-left"
                 />
               </span>
             ) : (
-              <img
-                src="/dd764246-7114-4e9e-84b9-d52d9ab8fbd1.png"
-                alt="OrynexOpraq"
-                className="h-10 w-auto max-w-[150px] object-contain"
-              />
+              <span className="inline-flex items-center rounded-lg bg-[#171717] px-2.5 py-1.5">
+                <img
+                  src="/dd764246-7114-4e9e-84b9-d52d9ab8fbd1.png"
+                  alt="OrynexOpraq"
+                  className="h-8 w-auto max-w-[150px] object-contain"
+                />
+              </span>
             )}
           </Link>
         </div>
