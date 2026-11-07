@@ -4,67 +4,66 @@ export default {
   theme: {
     extend: {
       colors: {
-        // OPRAQ primary purple scale, anchored on #6D3CEB (600) with the
-        // accent #8B5CF6 in the 400 slot. `brand` is kept as an alias of the
-        // same scale (existing app + landing classes use bg-brand-*), and
-        // brand.600 is now #6D3CEB so the whole product shares one primary.
+        // Calm NeuroClass blue scale, anchored on primary #1a73e8 (600)
+        // with hover/darker #1765cc (700) and soft tint #e8f0fe (50).
+        // `brand` is kept as an alias of the same scale so existing
+        // bg-brand-* classes resolve to the same calm blue.
         primary: {
-          50: '#F5F1FE',
-          100: '#EDE7FD',
-          200: '#DCCFFB',
-          300: '#C0A5F7',
-          400: '#8B5CF6',
-          500: '#7A4CF0',
-          600: '#6D3CEB',
-          700: '#5B2FD1',
-          800: '#4A26AB',
-          900: '#3C2089',
+          50: '#E8F0FE',
+          100: '#D2E3FC',
+          200: '#AECBFA',
+          300: '#8AB4F8',
+          400: '#669DF6',
+          500: '#4285F4',
+          600: '#1A73E8',
+          700: '#1765CC',
+          800: '#174EA6',
+          900: '#0F3D82',
         },
         brand: {
-          50: '#F5F1FE',
-          100: '#EDE7FD',
-          200: '#DCCFFB',
-          300: '#C0A5F7',
-          400: '#8B5CF6',
-          500: '#7A4CF0',
-          600: '#6D3CEB',
-          700: '#5B2FD1',
-          800: '#4A26AB',
-          900: '#3C2089',
+          50: '#E8F0FE',
+          100: '#D2E3FC',
+          200: '#AECBFA',
+          300: '#8AB4F8',
+          400: '#669DF6',
+          500: '#4285F4',
+          600: '#1A73E8',
+          700: '#1765CC',
+          800: '#174EA6',
+          900: '#0F3D82',
         },
         accent: {
-          400: '#A78BFA',
-          500: '#8B5CF6',
-          600: '#7C3AED',
+          400: '#669DF6',
+          500: '#4285F4',
+          600: '#1A73E8',
         },
-        // Application tokens (OPRAQ enterprise UI spec §3).
-        appbg: '#F5F6FA',
+        // Application tokens (calm NeuroClass palette).
+        appbg: '#F8FAFD',
         surface: '#FFFFFF',
-        warning: '#D97706',
-        // Landing page palette (public marketing page). `ink`, `muted` and
-        // `line` were aligned to the application tokens in Stage 1 of the
-        // enterprise redesign — the values are near-identical in practice
-        // (#151827 ink, #64748B muted, #E5E7EB line) so the landing page
-        // composition is unchanged.
-        paper: '#F8F8F6',
-        ink: '#151827',
-        muted: '#64748B',
-        deep: '#243C74',
-        lavender: '#EAEAFF',
-        line: '#E5E7EB',
+        success: '#188038',
+        warning: '#B06000',
+        error: '#D93025',
+        // Landing page tokens, aligned to the same palette.
+        paper: '#F8FAFD',
+        ink: '#202124',
+        muted: '#5F6368',
+        deep: '#174EA6',
+        lavender: '#E8F0FE',
+        line: '#DADCE0',
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-system', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
-        card: '12px',
-        panel: '14px',
+        card: '16px',
+        panel: '16px',
       },
       boxShadow: {
-        // Subtle card shadow only — no decorative elevation in the app UI.
-        card: '0 1px 2px rgba(21,24,39,0.04), 0 1px 3px rgba(21,24,39,0.05)',
+        // No elevation on cards. Shadows are reserved for overlays,
+        // dropdowns and popovers only.
+        card: 'none',
         popover:
-          '0 8px 24px rgba(21,24,39,0.10), 0 2px 6px rgba(21,24,39,0.06)',
+          '0 4px 16px rgba(32,33,36,0.12), 0 1px 4px rgba(32,33,36,0.08)',
       },
     },
   },

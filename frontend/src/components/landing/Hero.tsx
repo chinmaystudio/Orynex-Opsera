@@ -4,7 +4,7 @@ import { ArrowRight, CalendarCheck2, Check, PlayCircle } from 'lucide-react'
 /**
  * Editorial hero: oversized type set off-axis against a single restrained
  * product detail (a live approval request, the way it appears in the app).
- * No cards row, no gradient decoration.
+ * No cards row, no decorative background.
  */
 export default function Hero() {
   return (
@@ -52,7 +52,7 @@ export default function Hero() {
               <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted">
                 Happening now, in the Command Center
               </p>
-              <div className="mt-5 max-w-sm rounded-xl border border-line bg-white p-5 shadow-[0_16px_40px_-24px_rgba(23,23,23,0.25)]">
+              <div className="mt-5 max-w-sm rounded-xl border border-line bg-white p-5">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="text-sm font-semibold text-ink">
@@ -62,7 +62,7 @@ export default function Hero() {
                       Sales Agent · HIGH risk action
                     </p>
                   </div>
-                  <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 ring-1 ring-amber-200">
+                  <span className="rounded-full bg-warning/10 px-2 py-0.5 text-[11px] font-semibold text-warning ring-1 ring-warning/30">
                     Pending
                   </span>
                 </div>

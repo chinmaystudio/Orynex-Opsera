@@ -44,7 +44,7 @@ export default function Marketing() {
           description="Campaign data arrives with the Marketing module (Phase 3 backend). When it ships, campaigns created here — or drafted by the AI Marketing Manager for your approval — will appear on this timeline with status, channels and results. Nothing is shown until real campaigns exist."
         />
 
-        <section className="card p-5">
+        <section className="card p-4 sm:p-5">
           <div className="mb-1 flex items-center gap-2">
             <CalendarDays className="h-5 w-5 text-primary-600" />
             <h2 className="text-base font-semibold text-ink">

@@ -63,8 +63,8 @@ export default function Integrations() {
             aria-pressed={category === c}
             className={
               category === c
-                ? 'btn-primary !px-3 !py-1.5 text-xs'
-                : 'btn-secondary !px-3 !py-1.5 text-xs'
+                ? 'btn-primary min-h-11 !px-3 text-xs'
+                : 'btn-secondary min-h-11 !px-3 text-xs'
             }
           >
             {c}
@@ -94,7 +94,7 @@ export default function Integrations() {
               </div>
               <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
                 {group.items.map((integration) => (
-                  <div key={integration.name} className="card flex flex-col p-5">
+                  <div key={integration.name} className="card flex flex-col p-4 sm:p-5">
                     <div className="flex items-start justify-between gap-3">
                       <span className="flex h-10 w-10 items-center justify-center rounded-[10px] bg-appbg text-muted ring-1 ring-line">
                         <Plug className="h-5 w-5" />
@@ -112,7 +112,7 @@ export default function Integrations() {
                         Adapter lands in {integration.phase}
                       </span>
                       <button
-                        className="btn-secondary !px-3 !py-1.5 text-xs"
+                        className="btn-secondary min-h-11 !px-3 text-xs"
                         disabled
                         title="Connection flow ships with the adapter phase for this provider"
                       >

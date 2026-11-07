@@ -12,10 +12,10 @@ import {
 } from '../components/ui'
 
 const PRIORITY_STYLES: Record<string, string> = {
-  low: 'text-slate-500',
-  medium: 'text-sky-600',
-  high: 'text-amber-600',
-  urgent: 'text-red-600',
+  low: 'text-muted',
+  medium: 'text-primary-600',
+  high: 'text-warning',
+  urgent: 'text-error',
 }
 
 const COLUMNS: { key: string; label: string; statuses: string[] }[] = [
@@ -128,7 +128,7 @@ export default function ProjectsOps() {
 
       {!loading && !offline && !error && data && tasks.length > 0 && (
         <>
-          <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+          <div className="mb-6 grid grid-cols-2 gap-4 xl:grid-cols-5">
             {(
               [
                 ['Total tasks', stats.total],
@@ -138,7 +138,7 @@ export default function ProjectsOps() {
                 ['Completed', stats.done],
               ] as const
             ).map(([label, val]) => (
-              <div key={label} className="card p-4">
+              <div key={label} className="card p-4 sm:p-5">
                 <p className="text-xs font-medium uppercase tracking-wide text-muted">
                   {label}
                 </p>
@@ -148,13 +148,13 @@ export default function ProjectsOps() {
           </div>
 
           {view === 'kanban' && (
-            <div className="flex gap-3 overflow-x-auto pb-2">
+            <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
               {COLUMNS.map((col) => {
                 const items = tasks.filter((t) =>
                   col.statuses.includes(String(t.status)),
                 )
                 return (
-                  <div key={col.key} className="w-64 shrink-0">
+                  <div key={col.key} className="w-[78vw] max-w-72 shrink-0 snap-start sm:w-64">
                     <div className="mb-2 flex items-center justify-between px-1">
                       <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">
                         {col.label}
@@ -202,8 +202,8 @@ export default function ProjectsOps() {
           )}
 
           {view === 'table' && (
-            <div className="card overflow-hidden">
-              <table className="w-full text-left text-sm">
+            <div className="card overflow-x-auto">
+              <table className="w-full min-w-[640px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-line bg-appbg text-xs uppercase tracking-wide text-muted">
                     <th className="px-4 py-3 font-medium">Task</th>
@@ -249,7 +249,7 @@ export default function ProjectsOps() {
           )}
 
           {view === 'timeline' && (
-            <div className="card p-5">
+            <div className="card p-4 sm:p-5">
               <ol className="relative space-y-5 border-l border-line pl-6">
                 {timeline.map((task, i) => (
                   <li

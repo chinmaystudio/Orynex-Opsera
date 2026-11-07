@@ -50,12 +50,12 @@ export default function CreativeStudio() {
         </div>
 
         {/* ---- Video production pipeline (stage tracker) ---- */}
-        <section className="card p-5">
+        <section className="card p-4 sm:p-5">
           <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-base font-semibold text-ink">
               Video production pipeline
             </h2>
-            <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-200">
+            <span className="inline-flex items-center rounded-full bg-appbg px-2.5 py-0.5 text-xs font-medium text-muted ring-1 ring-inset ring-line">
               Not started — no productions
             </span>
           </div>

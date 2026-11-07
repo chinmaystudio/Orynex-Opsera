@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, LayoutGrid, List, WifiOff } from 'lucide-react'
+import { ArrowRight, WifiOff } from 'lucide-react'
 import { api } from '../lib/api'
 import { useFetch } from '../lib/useFetch'
 import { AGENT_PRESETS } from '../lib/presets'
@@ -12,10 +12,6 @@ import {
   LoadingSkeleton,
   PageHeader,
 } from '../components/ui'
-import OrgTopology, {
-  DEPARTMENT_GROUP_OF,
-  type TopologyDepartment,
-} from '../components/OrgTopology'
 
 /**
  * The standard OrynexOpraq department structure (spec §3C, §18, §19 +
@@ -73,7 +69,6 @@ export default function Departments() {
   const navigate = useNavigate()
   const departmentsFetch = useFetch<Department[]>(() => api.getDepartments())
   const tasksFetch = useFetch<BusinessTask[]>(() => api.getTasks())
-  const [view, setView] = useState<'topology' | 'directory'>('topology')
   const [search, setSearch] = useState('')
   const [selectedName, setSelectedName] = useState<string | null>(null)
 
@@ -144,16 +139,6 @@ export default function Departments() {
     )
   }, [rows, search])
 
-  const topologyDepartments: TopologyDepartment[] = useMemo(
-    () =>
-      filtered.map((r) => ({
-        name: r.name,
-        description: r.description,
-        group: DEPARTMENT_GROUP_OF[r.name] ?? 'business',
-      })),
-    [filtered],
-  )
-
   const selected = rows.find((r) => r.name === selectedName) ?? null
   const selectedPresets = selected
     ? (presetsByDepartment.get(selected.name) ?? [])
@@ -168,7 +153,7 @@ export default function Departments() {
       />
 
       {departmentsFetch.offline && (
-        <div className="mb-5 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-line bg-surface px-4 py-3">
           <WifiOff className="mt-0.5 h-5 w-5 shrink-0 text-warning" />
           <p className="text-sm text-ink">
             <span className="font-medium">Backend offline</span> — showing the
@@ -179,8 +164,8 @@ export default function Departments() {
         </div>
       )}
       {!departmentsFetch.offline && departmentsFetch.error && (
-        <div className="mb-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
-          <WifiOff className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
+        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-line bg-surface px-4 py-3">
+          <WifiOff className="mt-0.5 h-5 w-5 shrink-0 text-error" />
           <p className="text-sm text-ink">
             <span className="font-medium">Could not load departments.</span>{' '}
             {departmentsFetch.error} The standard template is shown below for
@@ -203,38 +188,7 @@ export default function Departments() {
         search={search}
         onSearchChange={setSearch}
         searchPlaceholder="Search departments…"
-      >
-        <div
-          className="inline-flex rounded-xl border border-line bg-surface p-0.5"
-          role="group"
-          aria-label="View"
-        >
-          <button
-            onClick={() => setView('topology')}
-            aria-pressed={view === 'topology'}
-            className={`inline-flex items-center gap-1.5 rounded-[10px] px-3 py-1.5 text-sm font-medium transition ${
-              view === 'topology'
-                ? 'bg-primary-600 text-white'
-                : 'text-muted hover:text-ink'
-            }`}
-          >
-            <LayoutGrid className="h-4 w-4" />
-            Topology
-          </button>
-          <button
-            onClick={() => setView('directory')}
-            aria-pressed={view === 'directory'}
-            className={`inline-flex items-center gap-1.5 rounded-[10px] px-3 py-1.5 text-sm font-medium transition ${
-              view === 'directory'
-                ? 'bg-primary-600 text-white'
-                : 'text-muted hover:text-ink'
-            }`}
-          >
-            <List className="h-4 w-4" />
-            Directory
-          </button>
-        </div>
-      </FilterBar>
+      />
 
       {departmentsFetch.loading ? (
         <LoadingSkeleton variant="cards" count={6} />
@@ -243,73 +197,69 @@ export default function Departments() {
           title="No departments match your search"
           description="Try a different search term — the organization structure itself is unchanged."
         />
-      ) : view === 'topology' ? (
-        <OrgTopology
-          departments={topologyDepartments}
-          presetAgentCounts={presetAgentCounts}
-          selectedName={selectedName ?? undefined}
-          onSelect={setSelectedName}
-        />
       ) : (
-        <div className="card overflow-hidden">
-          <ul className="divide-y divide-line">
-            {filtered.map((row) => (
-              <li
-                key={row.name}
-                className="flex items-center gap-4 px-5 py-4 transition hover:bg-appbg/70"
-              >
-                <div className="min-w-0 flex-1">
-                  <p className="flex flex-wrap items-center gap-2 text-sm font-medium text-ink">
-                    {row.name}
-                    {row.live ? (
-                      <span className="inline-flex items-center rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700 ring-1 ring-inset ring-emerald-200">
-                        Live record
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600 ring-1 ring-inset ring-slate-200">
-                        Default template
-                      </span>
-                    )}
-                  </p>
-                  {row.description && (
-                    <p className="mt-0.5 line-clamp-2 max-w-2xl text-[13px] leading-relaxed text-muted">
-                      {row.description}
-                    </p>
-                  )}
-                </div>
-                <div className="hidden shrink-0 gap-6 text-right sm:flex">
-                  <div>
-                    <p className="text-sm font-semibold text-ink">
-                      {presetAgentCounts.get(row.name) ?? 0}
-                    </p>
-                    <p className="text-[11px] text-muted">preset agents</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-ink">
-                      {row.live && row.employeeCount !== undefined
-                        ? row.employeeCount
-                        : '—'}
-                    </p>
-                    <p className="text-[11px] text-muted">employees</p>
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-ink">
-                      {tasksKnown
-                        ? (openTasksByDepartment.get(row.name) ?? 0)
-                        : '—'}
-                    </p>
-                    <p className="text-[11px] text-muted">open tasks</p>
-                  </div>
-                </div>
-                <button
-                  className="btn-secondary shrink-0"
-                  onClick={() => setSelectedName(row.name)}
-                >
-                  Inspect
-                </button>
-              </li>
-            ))}
-          </ul>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {filtered.map((row) => (
+            <button
+              key={row.name}
+              onClick={() => setSelectedName(row.name)}
+              className="card focus-ring flex min-h-11 flex-col p-5 text-left transition hover:bg-appbg sm:p-6"
+            >
+              <span className="flex w-full flex-wrap items-center justify-between gap-2">
+                <span className="text-sm font-medium text-ink">{row.name}</span>
+                {row.live ? (
+                  <span className="inline-flex items-center rounded-full bg-[#E6F4EA] px-2 py-0.5 text-[11px] font-medium text-success ring-1 ring-inset ring-[#CEEAD6]">
+                    Live record
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center rounded-full bg-appbg px-2 py-0.5 text-[11px] font-medium text-muted ring-1 ring-inset ring-line">
+                    Default template
+                  </span>
+                )}
+              </span>
+              {row.description && (
+                <span className="mt-2 block line-clamp-2 text-[13px] leading-relaxed text-muted">
+                  {row.description}
+                </span>
+              )}
+              <span className="mt-4 grid w-full grid-cols-2 gap-3 border-t border-line pt-4 sm:grid-cols-4">
+                <span>
+                  <span className="block text-sm font-semibold text-ink">
+                    {row.live && row.employeeCount !== undefined
+                      ? row.employeeCount
+                      : '—'}
+                  </span>
+                  <span className="block text-[11px] text-muted">employees</span>
+                </span>
+                <span>
+                  <span className="block text-sm font-semibold text-ink">
+                    {presetAgentCounts.get(row.name) ?? 0}
+                  </span>
+                  <span className="block text-[11px] text-muted">
+                    preset agents
+                  </span>
+                </span>
+                <span>
+                  <span className="block text-sm font-semibold text-ink">
+                    {row.live && row.agentCount !== undefined
+                      ? row.agentCount
+                      : '—'}
+                  </span>
+                  <span className="block text-[11px] text-muted">
+                    installed agents
+                  </span>
+                </span>
+                <span>
+                  <span className="block text-sm font-semibold text-ink">
+                    {tasksKnown
+                      ? (openTasksByDepartment.get(row.name) ?? 0)
+                      : '—'}
+                  </span>
+                  <span className="block text-[11px] text-muted">open tasks</span>
+                </span>
+              </span>
+            </button>
+          ))}
         </div>
       )}
 

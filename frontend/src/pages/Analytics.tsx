@@ -32,7 +32,7 @@ function Panel({
   children: ReactNode
 }) {
   return (
-    <section className="card p-5">
+    <section className="card p-4 sm:p-5">
       <h2 className="text-base font-semibold text-ink">{title}</h2>
       <p className="mb-4 mt-0.5 text-xs text-muted">{source}</p>
       {children}
@@ -72,14 +72,14 @@ function BarRow({
         highlighted ? 'bg-primary-50/70' : ''
       }`}
     >
-      <div className="w-36 shrink-0 truncate text-sm text-ink">{label}</div>
-      <div className="h-2.5 min-w-0 flex-1 overflow-hidden rounded-full bg-slate-100">
+      <div className="w-28 shrink-0 truncate text-sm text-ink sm:w-36">{label}</div>
+      <div className="h-2.5 min-w-0 flex-1 overflow-hidden rounded-full bg-line/50">
         <div
           className={`h-full rounded-full ${barClass}`}
           style={{ width: `${pct}%` }}
         />
       </div>
-      <div className="w-28 shrink-0 text-right text-sm tabular-nums text-muted">
+      <div className="w-20 shrink-0 text-right text-sm tabular-nums text-muted sm:w-28">
         {right}
       </div>
     </div>
@@ -91,13 +91,13 @@ function BarRow({
 /* ------------------------------------------------------------------ */
 
 const STATUS_ORDER: Array<{ key: string; label: string; bar: string }> = [
-  { key: 'pending', label: 'Pending', bar: 'bg-slate-400' },
-  { key: 'assigned', label: 'Assigned', bar: 'bg-sky-400' },
+  { key: 'pending', label: 'Pending', bar: 'bg-muted' },
+  { key: 'assigned', label: 'Assigned', bar: 'bg-primary-400' },
   { key: 'in_progress', label: 'In progress', bar: 'bg-primary-500' },
-  { key: 'waiting_approval', label: 'Waiting approval', bar: 'bg-amber-400' },
-  { key: 'blocked', label: 'Blocked', bar: 'bg-red-400' },
-  { key: 'completed', label: 'Completed', bar: 'bg-emerald-500' },
-  { key: 'failed', label: 'Failed', bar: 'bg-red-500' },
+  { key: 'waiting_approval', label: 'Waiting approval', bar: 'bg-warning' },
+  { key: 'blocked', label: 'Blocked', bar: 'bg-error' },
+  { key: 'completed', label: 'Completed', bar: 'bg-success' },
+  { key: 'failed', label: 'Failed', bar: 'bg-error' },
 ]
 
 const PIPELINE_ORDER = ['new', 'contacted', 'qualified', 'proposal', 'won', 'lost']
@@ -192,7 +192,7 @@ export default function Analytics() {
       .map(([k, count]) => ({
         key: k,
         label: k.replace(/_/g, ' '),
-        bar: 'bg-slate-400',
+        bar: 'bg-muted',
         count,
       }))
     return [...known, ...extras]
@@ -283,7 +283,7 @@ export default function Analytics() {
           <div className="flex flex-col items-end gap-1">
             <div className="flex gap-2">
               <button
-                className="btn-secondary"
+                className="btn-secondary min-h-11"
                 disabled
                 title="Report generation arrives with the BI engine in Phase 5"
               >
@@ -291,7 +291,7 @@ export default function Analytics() {
                 Generate report
               </button>
               <button
-                className="btn-secondary"
+                className="btn-secondary min-h-11"
                 disabled
                 title="Export arrives with the BI engine in Phase 5"
               >
@@ -432,7 +432,7 @@ export default function Analytics() {
                     </span>
                     <div
                       className={`w-full rounded-t ${
-                        d.count > 0 ? 'bg-primary-500' : 'bg-slate-200'
+                        d.count > 0 ? 'bg-primary-500' : 'bg-line'
                       }`}
                       style={{
                         height: `${Math.max(4, (d.count / daysMax) * 72)}px`,
@@ -512,12 +512,12 @@ export default function Analytics() {
                 max={riskMax}
                 barClass={
                   row.risk === 'critical'
-                    ? 'bg-red-500'
+                    ? 'bg-error'
                     : row.risk === 'high'
-                      ? 'bg-amber-400'
+                      ? 'bg-warning'
                       : row.risk === 'medium'
-                        ? 'bg-sky-400'
-                        : 'bg-emerald-500'
+                        ? 'bg-primary-400'
+                        : 'bg-success'
                 }
                 right={`${formatNumber(row.total)} total · ${formatNumber(row.pending)} pending`}
               />

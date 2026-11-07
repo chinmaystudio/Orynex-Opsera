@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react'
-import { LayoutGrid, List, WifiOff } from 'lucide-react'
+import { WifiOff } from 'lucide-react'
 import { api } from '../lib/api'
 import { useFetch } from '../lib/useFetch'
 import { AGENT_PRESETS } from '../lib/presets'
@@ -13,10 +13,18 @@ import {
   RiskBadge,
   StatusBadge,
 } from '../components/ui'
-import WorkforceNetwork, {
-  DIVISIONS,
-  agentInitials,
-} from '../components/WorkforceNetwork'
+const DIVISION_LABELS = [
+  'Core Workforce',
+  'Creative Studio',
+  'Engineering Studio',
+] as const
+
+function agentInitials(name: string): string {
+  const words = name.replace(/^AI\s+/i, '').split(/\s+/).filter(Boolean)
+  const first = words[0]?.[0] ?? 'A'
+  const second = words.length > 1 ? words[words.length - 1][0] : ''
+  return (first + second).toUpperCase()
+}
 
 /** Extra fields an installed (backend) agent record may carry. */
 interface InstalledExtras {
@@ -89,7 +97,7 @@ function AgentInspector({
             {isInstalled ? (
               <StatusBadge status={installed?.status ?? 'installed'} />
             ) : (
-              <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-200">
+              <span className="inline-flex items-center rounded-full bg-appbg px-2 py-0.5 text-xs font-medium text-muted ring-1 ring-inset ring-line">
                 Registry preset — not installed
               </span>
             )}
@@ -237,12 +245,9 @@ function AgentInspector({
 
 export default function AIWorkforce() {
   const installedFetch = useFetch<Agent[]>(() => api.getAgents())
-  const [view, setView] = useState<'network' | 'directory'>('network')
   const [category, setCategory] = useState<AgentCategory | 'all'>('all')
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState<Agent | null>(null)
-  const [highlightedDivision, setHighlightedDivision] =
-    useState<AgentCategory | null>(null)
 
   const offline = installedFetch.offline
   const installedKnown = !installedFetch.loading && !offline && !installedFetch.error
@@ -303,40 +308,19 @@ export default function AIWorkforce() {
         : undefined))
     : undefined
 
-  const overviewCells = [
-    {
-      label: 'Available presets',
-      value: String(AGENT_PRESETS.length),
-      sub: 'In the local registry — not deployed',
-    },
-    {
-      label: 'Installed agents',
-      value: installedKnown ? String(installedCount) : '—',
-      sub: installedKnown
-        ? 'Organization-scoped agent records'
-        : 'Unavailable while the backend is offline',
-    },
-    {
-      label: 'Active',
-      value: installedKnown ? String(activeCount) : '—',
-      sub: 'Installed agents with active status',
-    },
-    {
-      label: 'Awaiting deployment',
-      value: installedKnown ? String(awaitingDeployment) : '—',
-      sub: 'Presets not yet installed',
-    },
-  ]
+  const headerSubtitle = installedKnown
+    ? `${AGENT_PRESETS.length} presets in the registry · ${installedCount} installed · ${activeCount} active · ${awaitingDeployment} awaiting deployment`
+    : `${AGENT_PRESETS.length} presets in the registry — installed status unavailable`
 
   return (
     <div>
       <PageHeader
         title="AI Workforce"
-        subtitle="Your digital workforce, organized by role and responsibility."
+        subtitle={headerSubtitle}
       />
 
       {offline && (
-        <div className="mb-5 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-line bg-surface px-4 py-3">
           <WifiOff className="mt-0.5 h-5 w-5 shrink-0 text-warning" />
           <p className="text-sm text-ink">
             <span className="font-medium">Backend offline</span> — showing the
@@ -346,32 +330,14 @@ export default function AIWorkforce() {
         </div>
       )}
       {!offline && installedFetch.error && (
-        <div className="mb-5 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
-          <WifiOff className="mt-0.5 h-5 w-5 shrink-0 text-red-500" />
+        <div className="mb-5 flex items-start gap-3 rounded-2xl border border-line bg-surface px-4 py-3">
+          <WifiOff className="mt-0.5 h-5 w-5 shrink-0 text-error" />
           <p className="text-sm text-ink">
             <span className="font-medium">Could not load installed agents.</span>{' '}
             {installedFetch.error} The preset registry below is unaffected.
           </p>
         </div>
       )}
-
-      {/* ---- Overview strip ---- */}
-      <section
-        className="card mb-6 grid grid-cols-2 divide-line overflow-hidden max-lg:gap-px xl:grid-cols-4 xl:divide-x"
-        aria-label="Workforce overview"
-      >
-        {overviewCells.map((cell) => (
-          <div key={cell.label} className="bg-surface px-5 py-4">
-            <p className="text-xs font-medium uppercase tracking-wide text-muted">
-              {cell.label}
-            </p>
-            <p className="mt-1.5 text-2xl font-semibold tracking-tight text-ink">
-              {cell.value}
-            </p>
-            <p className="mt-0.5 text-xs leading-snug text-muted">{cell.sub}</p>
-          </div>
-        ))}
-      </section>
 
       {/* ---- Controls ---- */}
       <FilterBar
@@ -384,7 +350,7 @@ export default function AIWorkforce() {
             key={key}
             onClick={() => setCategory(key)}
             className={
-              category === key ? 'btn-primary' : 'btn-secondary'
+              category === key ? 'btn-primary min-h-11' : 'btn-secondary min-h-11'
             }
             aria-pressed={category === key}
           >
@@ -392,156 +358,105 @@ export default function AIWorkforce() {
             {counts[key] ?? 0})
           </button>
         ))}
-        <span className="mx-1 hidden h-6 w-px bg-line sm:block" aria-hidden />
-        <div
-          className="inline-flex rounded-xl border border-line bg-surface p-0.5"
-          role="group"
-          aria-label="View"
-        >
-          <button
-            onClick={() => setView('network')}
-            aria-pressed={view === 'network'}
-            className={`inline-flex items-center gap-1.5 rounded-[10px] px-3 py-1.5 text-sm font-medium transition ${
-              view === 'network'
-                ? 'bg-primary-600 text-white'
-                : 'text-muted hover:text-ink'
-            }`}
-          >
-            <LayoutGrid className="h-4 w-4" />
-            Workforce Network
-          </button>
-          <button
-            onClick={() => setView('directory')}
-            aria-pressed={view === 'directory'}
-            className={`inline-flex items-center gap-1.5 rounded-[10px] px-3 py-1.5 text-sm font-medium transition ${
-              view === 'directory'
-                ? 'bg-primary-600 text-white'
-                : 'text-muted hover:text-ink'
-            }`}
-          >
-            <List className="h-4 w-4" />
-            Agent Directory
-          </button>
-        </div>
       </FilterBar>
 
-      {installedFetch.loading && view === 'directory' && (
-        <LoadingSkeleton variant="rows" count={5} />
-      )}
-
-      {/* ---- Network view ---- */}
-      {view === 'network' &&
-        (filtered.length === 0 ? (
-          <EmptyState
-            title="No agents match your filters"
-            description="Try a different search term or category — the registry itself is unchanged."
-          />
-        ) : (
-          <WorkforceNetwork
-            agents={filtered}
-            installedNames={installedNames}
-            selectedSlug={selected?.slug ?? selected?.name}
-            highlightedDivision={highlightedDivision}
-            onSelectAgent={setSelected}
-            onSelectDivision={setHighlightedDivision}
-          />
-        ))}
-
-      {/* ---- Directory view ---- */}
-      {view === 'directory' && (
-        <div className="card overflow-hidden">
-          {filtered.length === 0 && unmatchedInstalled.length === 0 ? (
-            <div className="p-5">
-              <EmptyState
-                title="No agents match your filters"
-                description="Try a different search term or category."
-              />
-            </div>
-          ) : (
-            <ul className="divide-y divide-line">
-              {filtered.map((agent) => {
-                const rec = installedByName.get(normalize(agent.name))
-                return (
-                  <li
-                    key={agent.slug ?? agent.name}
-                    className="flex items-center gap-4 px-5 py-3.5 transition hover:bg-appbg/70"
-                  >
-                    <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-primary-50 text-[13px] font-semibold text-primary-700 ring-1 ring-primary-100">
+      {installedFetch.loading ? (
+        <LoadingSkeleton variant="cards" count={6} />
+      ) : filtered.length === 0 && unmatchedInstalled.length === 0 ? (
+        <EmptyState
+          title="No agents match your filters"
+          description="Try a different search term or category — the registry itself is unchanged."
+        />
+      ) : (
+        <>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+            {filtered.map((agent) => {
+              const rec = installedByName.get(normalize(agent.name))
+              return (
+                <button
+                  key={agent.slug ?? agent.name}
+                  onClick={() => setSelected(agent)}
+                  className="card focus-ring flex min-h-11 flex-col p-5 text-left transition hover:bg-appbg sm:p-6"
+                >
+                  <span className="flex w-full items-start justify-between gap-3">
+                    <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-primary-50 text-sm font-semibold text-primary-700 ring-1 ring-primary-100">
                       {agentInitials(agent.name)}
                       {rec && (
-                        <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
+                        <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-success ring-2 ring-white" />
                       )}
                     </span>
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-ink">
-                        {agent.name}
-                        <span className="ml-2 text-xs font-normal text-muted">
-                          {agent.role} · {agent.department}
-                        </span>
-                      </p>
-                      <p className="mt-0.5 line-clamp-1 text-[13px] text-muted">
-                        {agent.description}
-                      </p>
-                    </div>
-                    <span className="hidden shrink-0 text-xs text-muted lg:block">
+                    {rec ? (
+                      <StatusBadge status={rec.status ?? 'installed'} />
+                    ) : (
+                      <span className="inline-flex items-center rounded-full bg-appbg px-2 py-0.5 text-xs font-medium text-muted ring-1 ring-inset ring-line">
+                        Preset
+                      </span>
+                    )}
+                  </span>
+                  <span className="mt-4 block w-full">
+                    <span className="block truncate text-sm font-medium text-ink">
+                      {agent.name}
+                    </span>
+                    <span className="mt-0.5 block truncate text-xs text-muted">
+                      {agent.role} · {agent.department}
+                    </span>
+                    <span className="mt-2 block line-clamp-2 text-[13px] leading-relaxed text-muted">
+                      {agent.description}
+                    </span>
+                  </span>
+                  <span className="mt-4 flex w-full flex-wrap items-center justify-between gap-2 border-t border-line pt-3">
+                    <span className="inline-flex items-center rounded-full bg-primary-50 px-2 py-0.5 text-xs font-medium text-primary-700 ring-1 ring-inset ring-primary-100">
+                      {CATEGORY_LABELS[agent.category]}
+                    </span>
+                    <span className="text-xs text-muted">
                       {agent.tools?.length ?? 0} capabilities
                     </span>
-                    <span className="shrink-0">
-                      {rec ? (
-                        <StatusBadge status={rec.status ?? 'installed'} />
-                      ) : (
-                        <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-200">
-                          Preset
-                        </span>
-                      )}
-                    </span>
-                    <button
-                      className="btn-secondary shrink-0"
-                      onClick={() => setSelected(agent)}
-                    >
-                      Inspect
-                    </button>
-                  </li>
-                )
-              })}
-              {unmatchedInstalled.map((rec) => (
-                <li
-                  key={rec.id ?? rec.name}
-                  className="flex items-center gap-4 bg-primary-50/30 px-5 py-3.5"
-                >
-                  <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-primary-600 text-[13px] font-semibold text-white">
-                    {agentInitials(rec.name)}
-                    <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-white" />
                   </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-medium text-ink">
-                      {rec.name}
-                      <span className="ml-2 text-xs font-normal text-muted">
-                        {rec.role} · {rec.department}
-                      </span>
-                    </p>
-                    <p className="mt-0.5 line-clamp-1 text-[13px] text-muted">
-                      Installed agent record — not part of the standard preset
-                      registry.
-                    </p>
-                  </div>
+                </button>
+              )
+            })}
+            {unmatchedInstalled.map((rec) => (
+              <button
+                key={rec.id ?? rec.name}
+                onClick={() => setSelected(rec)}
+                className="card focus-ring flex min-h-11 flex-col p-5 text-left transition hover:bg-appbg sm:p-6"
+              >
+                <span className="flex w-full items-start justify-between gap-3">
+                  <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-[10px] bg-primary-600 text-sm font-semibold text-white">
+                    {agentInitials(rec.name)}
+                    <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-success ring-2 ring-white" />
+                  </span>
                   <StatusBadge status={rec.status ?? 'installed'} />
-                  <button
-                    className="btn-secondary shrink-0"
-                    onClick={() => setSelected(rec)}
-                  >
-                    Inspect
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-          <p className="border-t border-line bg-appbg/60 px-5 py-3 text-xs text-muted">
-            {DIVISIONS.map((d) => d.label).join(' · ')} — “Preset” means the
-            agent definition is available in the registry; it is not a
-            deployed employee until it is installed into the organization.
+                </span>
+                <span className="mt-4 block w-full">
+                  <span className="block truncate text-sm font-medium text-ink">
+                    {rec.name}
+                  </span>
+                  <span className="mt-0.5 block truncate text-xs text-muted">
+                    {rec.role} · {rec.department}
+                  </span>
+                  <span className="mt-2 block line-clamp-2 text-[13px] leading-relaxed text-muted">
+                    Installed agent record — not part of the standard preset
+                    registry.
+                  </span>
+                </span>
+                <span className="mt-4 flex w-full flex-wrap items-center justify-between gap-2 border-t border-line pt-3">
+                  <span className="inline-flex items-center rounded-full bg-primary-50 px-2 py-0.5 text-xs font-medium text-primary-700 ring-1 ring-inset ring-primary-100">
+                    {CATEGORY_LABELS[rec.category]}
+                  </span>
+                  <span className="text-xs text-muted">
+                    {rec.tools?.length ?? 0} capabilities
+                  </span>
+                </span>
+              </button>
+            ))}
+          </div>
+          <p className="mt-4 rounded-2xl border border-line bg-surface px-5 py-3 text-xs text-muted">
+            {DIVISION_LABELS.join(' · ')} — “Preset” means the agent
+            definition is available in the registry; it is not a deployed
+            employee until it is installed into the organization.
           </p>
-        </div>
+        </>
       )}
 
       <AgentInspector

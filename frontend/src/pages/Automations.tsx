@@ -11,7 +11,7 @@ export default function Automations() {
         actions={
           <div className="flex flex-col items-end gap-1">
             <button
-              className="btn-primary"
+              className="btn-primary min-h-11"
               disabled
               title="Available with the Phase 4 workflow engine"
             >
@@ -41,12 +41,12 @@ export default function Automations() {
         />
 
         {/* ---- Canvas ---- */}
-        <section className="card p-5 lg:col-span-2">
+        <section className="card p-4 sm:p-5 lg:col-span-2">
           <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-base font-semibold text-ink">
               Customer acquisition workflow
             </h2>
-            <span className="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700 ring-1 ring-inset ring-amber-200">
+            <span className="inline-flex items-center rounded-full bg-[#FEF7E0] px-2.5 py-0.5 text-xs font-medium text-warning ring-1 ring-inset ring-[#FDE293]">
               Template — not an active workflow
             </span>
           </div>

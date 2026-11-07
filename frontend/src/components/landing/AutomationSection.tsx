@@ -18,7 +18,7 @@ const NODES = [
 
 export default function AutomationSection() {
   return (
-    <section id="automation" className="scroll-mt-16 bg-deep text-white">
+    <section id="automation" className="scroll-mt-16 bg-primary-600 text-white">
       <div className="mx-auto w-full max-w-6xl px-5 py-20 sm:px-8 lg:py-28">
         <div className="max-w-2xl">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-lavender">

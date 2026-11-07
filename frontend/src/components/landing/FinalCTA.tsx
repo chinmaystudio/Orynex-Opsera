@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react'
 
 export default function FinalCTA() {
   return (
-    <section className="bg-deep text-white">
+    <section className="bg-primary-600 text-white">
       <div className="mx-auto w-full max-w-6xl px-5 py-20 text-center sm:px-8 lg:py-28">
         <h2 className="mx-auto max-w-2xl text-4xl font-semibold tracking-tight sm:text-5xl">
           Give your business a better way to work.
@@ -19,7 +19,7 @@ export default function FinalCTA() {
           </Link>
           <Link
             to="/app/ai-workforce"
-            className="inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium text-white ring-1 ring-white/35 transition duration-200 hover:-translate-y-px hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            className="inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium text-white ring-1 ring-white/35 transition duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
             Explore the platform
           </Link>

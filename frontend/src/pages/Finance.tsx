@@ -91,20 +91,20 @@ export default function Finance() {
       {!loading && !offline && !error && data && (
         <div className="space-y-6">
           <section>
-            <div className="grid gap-4 sm:grid-cols-3">
-              <div className="card p-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              <div className="card p-4 sm:p-5">
                 <p className="text-xs font-medium uppercase tracking-wide text-muted">Revenue</p>
                 <p className="mt-1 text-2xl font-semibold text-ink">
                   {formatMoney(fin?.revenue)}
                 </p>
               </div>
-              <div className="card p-4">
+              <div className="card p-4 sm:p-5">
                 <p className="text-xs font-medium uppercase tracking-wide text-muted">Expenses</p>
                 <p className="mt-1 text-2xl font-semibold text-ink">
                   {formatMoney(fin?.expenses)}
                 </p>
               </div>
-              <div className="card p-4">
+              <div className="card p-4 sm:p-5">
                 <p className="text-xs font-medium uppercase tracking-wide text-muted">Profit</p>
                 <p className="mt-1 text-2xl font-semibold text-ink">
                   {formatMoney(fin?.profit)}
@@ -118,7 +118,7 @@ export default function Finance() {
 
           <section className="card overflow-hidden">
             <div
-              className="flex gap-1 border-b border-line bg-surface px-3 pt-3"
+              className="flex gap-1 overflow-x-auto border-b border-line bg-surface px-3 pt-3"
               role="tablist"
               aria-label="Finance records"
             >
@@ -128,7 +128,7 @@ export default function Finance() {
                   role="tab"
                   aria-selected={tab === t}
                   onClick={() => setTab(t)}
-                  className={`rounded-t-lg px-3 py-2 text-sm font-medium transition ${
+                  className={`min-h-11 shrink-0 rounded-t-lg px-3 py-2 text-sm font-medium transition ${
                     tab === t
                       ? 'bg-appbg text-primary-700'
                       : 'text-muted hover:text-ink'
@@ -144,14 +144,14 @@ export default function Finance() {
             />
           </section>
 
-          <section className="card p-5">
+          <section className="card p-4 sm:p-5">
             <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
               <h2 className="inline-flex items-center gap-2 text-base font-semibold text-ink">
                 <ShieldAlert className="h-5 w-5 text-warning" /> Payment approvals
               </h2>
               <Link
                 to="/app/approvals"
-                className="inline-flex items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-700"
+                className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-700"
               >
                 Open approval inbox <ArrowRight className="h-4 w-4" />
               </Link>

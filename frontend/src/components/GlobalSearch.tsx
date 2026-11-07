@@ -7,6 +7,8 @@ import {
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
+  ArrowDown,
+  ArrowUp,
   Bot,
   Building2,
   CheckSquare,
@@ -295,7 +297,7 @@ export default function GlobalSearch({
                       className={`flex w-full items-center gap-3 px-4 py-2 text-left text-sm transition ${
                         isActive
                           ? 'bg-primary-50 text-ink'
-                          : 'text-slate-600'
+                          : 'text-muted'
                       }`}
                     >
                       <Icon
@@ -314,7 +316,7 @@ export default function GlobalSearch({
                         )}
                       </span>
                       {r.badge && (
-                        <span className="shrink-0 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-muted ring-1 ring-inset ring-line">
+                        <span className="shrink-0 rounded-full bg-appbg px-2 py-0.5 text-[11px] font-medium text-muted ring-1 ring-inset ring-line">
                           {r.badge}
                         </span>
                       )}
@@ -327,8 +329,13 @@ export default function GlobalSearch({
         </div>
 
         <div className="flex items-center gap-4 border-t border-line bg-appbg px-4 py-2 text-[11px] text-muted">
-          <span>
-            <kbd className="rounded border border-line bg-surface px-1">↑↓</kbd>{' '}
+          <span className="inline-flex items-center gap-1">
+            <kbd className="inline-flex items-center rounded border border-line bg-surface px-1 py-0.5">
+              <ArrowUp className="h-3 w-3" />
+            </kbd>
+            <kbd className="inline-flex items-center rounded border border-line bg-surface px-1 py-0.5">
+              <ArrowDown className="h-3 w-3" />
+            </kbd>{' '}
             navigate
           </span>
           <span>

@@ -98,7 +98,7 @@ export default function Approvals() {
       {actionError && (
         <p
           role="alert"
-          className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+          className="mb-4 rounded-lg border border-[#F2B8B5] bg-[#FCE8E6] px-4 py-3 text-sm font-medium text-error"
         >
           {actionError}
         </p>
@@ -130,12 +130,12 @@ export default function Approvals() {
       )}
 
       {!loading && !offline && !error && data && data.length > 0 && (
-        <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_360px] xl:gap-8">
           <section aria-label="Pending approval requests">
             <h2 className="mb-3 flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted">
               Pending ({pending.length})
               {criticalPending > 0 && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-red-50 px-2 py-0.5 text-xs font-semibold normal-case tracking-normal text-red-700 ring-1 ring-inset ring-red-200">
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#FCE8E6] px-2 py-0.5 text-xs font-semibold normal-case tracking-normal text-error ring-1 ring-inset ring-[#F2B8B5]">
                   <AlertOctagon className="h-3.5 w-3.5" aria-hidden />
                   {criticalPending} critical
                 </span>
@@ -218,20 +218,20 @@ function ApprovalCard({
   const high = String(approval.risk_level).toLowerCase() === 'high'
 
   const accent = critical
-    ? 'border-red-300 shadow-[inset_4px_0_0_0_#dc2626]'
+    ? 'border-[#F2B8B5] shadow-[inset_4px_0_0_0_#D93025]'
     : high
-      ? 'border-amber-300 shadow-[inset_4px_0_0_0_#d97706]'
+      ? 'border-[#FDE293] shadow-[inset_4px_0_0_0_#B06000]'
       : ''
 
   return (
-    <article className={`card p-5 ${accent}`}>
+    <article className={`card p-4 sm:p-5 ${accent}`}>
       <div className="flex flex-wrap items-start gap-4">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
             {critical ? (
-              <AlertOctagon className="h-4 w-4 shrink-0 text-red-600" aria-label="Critical risk" />
+              <AlertOctagon className="h-4 w-4 shrink-0 text-error" aria-label="Critical risk" />
             ) : high ? (
-              <ShieldAlert className="h-4 w-4 shrink-0 text-amber-600" aria-label="High risk" />
+              <ShieldAlert className="h-4 w-4 shrink-0 text-warning" aria-label="High risk" />
             ) : null}
             <h3 className="text-sm font-semibold text-ink">{approval.title}</h3>
             <RiskBadge level={String(approval.risk_level)} />
@@ -281,7 +281,7 @@ function ApprovalCard({
           {confirming && (
             <p
               role="alert"
-              className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm font-medium text-red-700"
+              className="mt-3 rounded-lg border border-[#F2B8B5] bg-[#FCE8E6] px-3 py-2 text-sm font-medium text-error"
             >
               This is a CRITICAL action. Confirm that you want to{' '}
               {confirming === 'approved' ? 'approve' : 'reject'} it — the
@@ -296,7 +296,9 @@ function ApprovalCard({
               <>
                 <button
                   className={
-                    confirming === 'approved' ? 'btn-primary' : 'btn-secondary'
+                    confirming === 'approved'
+                      ? 'btn-primary min-h-11'
+                      : 'btn-secondary min-h-11'
                   }
                   disabled={busy || !approval.id}
                   onClick={() => onDecide(approval, confirming)}
@@ -309,7 +311,7 @@ function ApprovalCard({
                       : 'Confirm rejection'}
                 </button>
                 <button
-                  className="btn-secondary"
+                  className="btn-secondary min-h-11"
                   disabled={busy}
                   onClick={onCancelConfirm}
                 >
@@ -319,7 +321,7 @@ function ApprovalCard({
             ) : (
               <>
                 <button
-                  className="btn-primary"
+                  className="btn-primary min-h-11"
                   disabled={busy || !approval.id}
                   aria-label={`Approve: ${approval.title}`}
                   onClick={() => onDecide(approval, 'approved')}
@@ -328,7 +330,7 @@ function ApprovalCard({
                   {busy ? 'Recording…' : 'Approve'}
                 </button>
                 <button
-                  className="btn-secondary"
+                  className="btn-secondary min-h-11"
                   disabled={busy || !approval.id}
                   aria-label={`Reject: ${approval.title}`}
                   onClick={() => onDecide(approval, 'rejected')}

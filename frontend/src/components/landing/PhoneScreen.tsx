@@ -75,7 +75,7 @@ function AssistantHeader() {
         <p className="text-[12.5px] font-semibold leading-tight text-ink">
           Opraq Assistant
         </p>
-        <p className="text-[10px] leading-tight text-emerald-600">
+        <p className="text-[10px] leading-tight text-success">
           Connected to your workspace
         </p>
       </div>
@@ -153,7 +153,7 @@ function Scene1({ sub }: { sub: number }) {
         </span>
         <span
           className={`flex h-6 w-6 items-center justify-center rounded-full text-white transition ${
-            sent ? 'bg-slate-300' : 'bg-brand-600'
+            sent ? 'bg-line' : 'bg-brand-600'
           }`}
         >
           <Check className="h-3.5 w-3.5" />
@@ -297,11 +297,11 @@ function Scene3({ sub }: { sub: number }) {
                 </p>
               </div>
               {done ? (
-                <Check className="h-4 w-4 shrink-0 text-emerald-600" />
+                <Check className="h-4 w-4 shrink-0 text-success" />
               ) : active ? (
                 <Loader2 className="h-4 w-4 shrink-0 animate-spin text-brand-600" />
               ) : (
-                <CircleDashed className="h-4 w-4 shrink-0 text-slate-300" />
+                <CircleDashed className="h-4 w-4 shrink-0 text-line" />
               )}
             </div>
           )
@@ -382,7 +382,7 @@ function Scene4({ sub }: { sub: number }) {
                   </p>
                 </div>
                 {done ? (
-                  <Check className="h-4 w-4 text-emerald-600" />
+                  <Check className="h-4 w-4 text-success" />
                 ) : (
                   <span className="text-[10px] font-semibold text-brand-600">
                     {pct}%
@@ -392,7 +392,7 @@ function Scene4({ sub }: { sub: number }) {
               <div className="mt-2.5 h-1 overflow-hidden rounded-full bg-line">
                 <div
                   className={`h-full rounded-full transition-[width] duration-300 ${
-                    done ? 'bg-emerald-500' : 'bg-brand-600'
+                    done ? 'bg-success' : 'bg-brand-600'
                   }`}
                   style={{ width: `${pct}%` }}
                 />
@@ -416,7 +416,7 @@ function Scene5({ sub }: { sub: number }) {
   const approved = sub >= 0.62
   return (
     <>
-      <span className="inline-flex w-fit items-center rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-semibold text-amber-700 ring-1 ring-amber-200">
+      <span className="inline-flex w-fit items-center rounded-full bg-warning/10 px-2.5 py-1 text-[10px] font-semibold text-warning ring-1 ring-warning/30">
         Approval needed
       </span>
       <p className="mt-3 text-[15px] font-semibold leading-snug text-ink">
@@ -437,7 +437,7 @@ function Scene5({ sub }: { sub: number }) {
         </p>
         <p className="flex justify-between">
           <span className="text-muted">Risk level</span>
-          <span className="font-semibold text-amber-700">
+          <span className="font-semibold text-warning">
             HIGH — external send
           </span>
         </p>
@@ -445,7 +445,7 @@ function Scene5({ sub }: { sub: number }) {
       <div className="mt-auto space-y-2">
         <div
           className={`flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-[13px] font-medium text-white transition-all duration-500 ${
-            approved ? 'bg-emerald-600' : 'bg-brand-600'
+            approved ? 'bg-success' : 'bg-brand-600'
           }`}
         >
           {approved ? (
@@ -483,13 +483,13 @@ function Scene6({ sub }: { sub: number }) {
     <>
       <div className="flex flex-col items-center pt-4 text-center">
         <span
-          className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 ring-1 ring-emerald-200 transition-all duration-500"
+          className="flex h-14 w-14 items-center justify-center rounded-full bg-success/10 ring-1 ring-success/30 transition-all duration-500"
           style={{
             transform: sub >= 0.08 ? 'scale(1)' : 'scale(0.7)',
             opacity: sub >= 0.08 ? 1 : 0,
           }}
         >
-          <Check className="h-7 w-7 text-emerald-600" />
+          <Check className="h-7 w-7 text-success" />
         </span>
         <p className="mt-3.5 text-[15px] font-semibold text-ink">
           Workflow completed.

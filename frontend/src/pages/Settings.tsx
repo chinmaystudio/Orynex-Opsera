@@ -200,7 +200,7 @@ export default function Settings() {
         <div className="min-w-0">
           {section === 'workspace' && (
             <section aria-label="Workspace settings" className="space-y-4">
-              <div className="card p-5">
+              <div className="card p-4 sm:p-5">
                 <h2 className="text-base font-semibold text-ink">Workspace</h2>
                 <p className="mt-1 text-sm leading-relaxed text-muted">
                   The workspace selector in the top bar switches between the
@@ -242,7 +242,7 @@ export default function Settings() {
                 error={error}
                 reload={reload}
               />
-              <div className="card p-5">
+              <div className="card p-4 sm:p-5">
                 <h2 className="text-base font-semibold text-ink">
                   Organization profile
                 </h2>
@@ -306,7 +306,7 @@ export default function Settings() {
           )}
 
           {section === 'permissions' && (
-            <section aria-label="Permissions" className="card p-5">
+            <section aria-label="Permissions" className="card p-4 sm:p-5">
               <h2 className="text-base font-semibold text-ink">
                 How permissions work
               </h2>
@@ -385,7 +385,7 @@ export default function Settings() {
                   </table>
                 </div>
               </div>
-              <div className="card p-5">
+              <div className="card p-4 sm:p-5">
                 <h2 className="text-base font-semibold text-ink">Audit log</h2>
                 <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted">
                   Mutations, approval decisions and agent actions are written
@@ -404,7 +404,7 @@ export default function Settings() {
           )}
 
           {section === 'ai' && (
-            <section aria-label="AI configuration" className="card p-5">
+            <section aria-label="AI configuration" className="card p-4 sm:p-5">
               <h2 className="text-base font-semibold text-ink">
                 AI configuration
               </h2>
@@ -427,7 +427,7 @@ export default function Settings() {
           )}
 
           {section === 'integrations' && (
-            <section aria-label="Integration settings" className="card p-5">
+            <section aria-label="Integration settings" className="card p-4 sm:p-5">
               <h2 className="text-base font-semibold text-ink">Integrations</h2>
               <p className="mt-1 max-w-2xl text-sm leading-relaxed text-muted">
                 {configuredCount} of {INTEGRATIONS.length} integrations in the
@@ -444,7 +444,7 @@ export default function Settings() {
           )}
 
           {section === 'notifications' && (
-            <section aria-label="Notification settings" className="card p-5">
+            <section aria-label="Notification settings" className="card p-4 sm:p-5">
               <h2 className="text-base font-semibold text-ink">
                 Notifications
               </h2>

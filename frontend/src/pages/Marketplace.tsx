@@ -75,7 +75,7 @@ function MarketplaceInspector({
             {installed ? (
               <StatusBadge status={installed.status ?? 'installed'} />
             ) : (
-              <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-200">
+              <span className="inline-flex items-center rounded-full bg-appbg px-2 py-0.5 text-xs font-medium text-muted ring-1 ring-inset ring-line">
                 Preset — available in registry
               </span>
             )}
@@ -253,7 +253,7 @@ export default function Marketplace() {
       />
 
       {installedFetch.offline && (
-        <div className="mb-5 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+        <div className="mb-5 flex items-start gap-3 rounded-xl border border-[#FDE293] bg-[#FEF7E0] px-4 py-3">
           <WifiOff className="mt-0.5 h-5 w-5 shrink-0 text-warning" />
           <p className="text-sm text-ink">
             <span className="font-medium">Backend offline</span> — the
@@ -325,7 +325,7 @@ export default function Marketplace() {
               return (
                 <li
                   key={agent.slug ?? agent.name}
-                  className="flex items-center gap-4 px-5 py-3.5 transition hover:bg-appbg/70"
+                  className="flex flex-wrap items-center gap-3 px-4 py-3.5 transition hover:bg-appbg/70 sm:gap-4 sm:px-5"
                 >
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] bg-primary-50 text-[13px] font-semibold text-primary-700 ring-1 ring-primary-100">
                     {agentInitials(agent.name)}
@@ -353,13 +353,13 @@ export default function Marketplace() {
                     {rec ? (
                       <StatusBadge status={rec.status ?? 'installed'} />
                     ) : (
-                      <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-200">
+                      <span className="inline-flex items-center rounded-full bg-appbg px-2 py-0.5 text-xs font-medium text-muted ring-1 ring-inset ring-line">
                         Preset — in registry
                       </span>
                     )}
                   </span>
                   <button
-                    className="btn-secondary shrink-0"
+                    className="btn-secondary min-h-11 shrink-0"
                     onClick={() => setSelected(agent)}
                   >
                     Inspect

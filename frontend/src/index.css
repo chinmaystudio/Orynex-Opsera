@@ -5,24 +5,25 @@
 @layer base {
   html {
     font-family: Inter, ui-sans-system, system-ui, sans-serif;
+    font-size: 16px;
   }
   body {
-    @apply bg-appbg text-ink antialiased;
+    @apply bg-appbg text-[15px] leading-relaxed text-ink antialiased;
   }
 }
 
 @layer components {
   .card {
-    @apply rounded-card border border-line bg-surface shadow-card;
+    @apply rounded-2xl border border-line bg-surface;
   }
   .btn-primary {
-    @apply inline-flex items-center gap-2 rounded-[10px] bg-primary-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center gap-2 rounded-full bg-primary-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-primary-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .btn-secondary {
-    @apply inline-flex items-center gap-2 rounded-[10px] border border-line bg-surface px-4 py-2 text-sm font-medium text-ink transition hover:bg-appbg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center gap-2 rounded-full border border-line bg-surface px-4 py-2 text-sm font-medium text-ink transition hover:bg-appbg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50;
   }
   .input {
-    @apply w-full rounded-[10px] border border-line bg-surface px-3 py-2 text-sm text-ink outline-none transition placeholder:text-muted/70 focus:border-primary-500 focus:ring-2 focus:ring-primary-100;
+    @apply w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm text-ink outline-none transition placeholder:text-muted/70 focus:border-primary-500 focus:ring-2 focus:ring-primary-100;
   }
   .label {
     @apply mb-1 block text-xs font-medium uppercase tracking-wide text-muted;
@@ -32,17 +33,16 @@
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-1;
   }
 
-  /* Landing page buttons — extend the .btn-primary language with the
-     slightly larger proportions used for marketing CTAs. Scoped to the
-     landing page; their primary now resolves to the shared #6D3CEB. */
+  /* Landing page buttons — same calm language as the app buttons,
+     with the slightly larger proportions used for marketing CTAs. */
   .l-btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm transition duration-200 hover:-translate-y-px hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-brand-600 px-5 py-2.5 text-sm font-medium text-white transition duration-200 hover:bg-brand-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-50;
   }
   .l-btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line bg-white px-5 py-2.5 text-sm font-medium text-ink transition duration-200 hover:-translate-y-px hover:border-slate-300 hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 focus-visible:ring-offset-paper active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-line bg-white px-5 py-2.5 text-sm font-medium text-ink transition duration-200 hover:bg-appbg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 focus-visible:ring-offset-paper disabled:cursor-not-allowed disabled:opacity-50;
   }
   .l-btn-on-dark {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-medium text-deep shadow-sm transition duration-200 hover:-translate-y-px hover:bg-lavender focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-deep active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-50;
+    @apply inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-medium text-deep transition duration-200 hover:bg-lavender focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-deep disabled:cursor-not-allowed disabled:opacity-50;
   }
 }
 
@@ -58,25 +58,20 @@
 
 @layer utilities {
   .skeleton {
-    @apply relative overflow-hidden rounded-md bg-slate-200/70;
+    @apply relative overflow-hidden rounded-md bg-line/70;
   }
   .skeleton::after {
     content: '';
     position: absolute;
     inset: 0;
     transform: translateX(-100%);
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgba(255, 255, 255, 0.55),
-      transparent
-    );
+    background: rgba(255, 255, 255, 0.55);
     animation: skeleton-shimmer 1.6s infinite;
   }
   /* Slim, unobtrusive scrollbar for the app sidebar's independent scroll. */
   .sidebar-scroll {
     scrollbar-width: thin;
-    scrollbar-color: #cbd5e1 transparent;
+    scrollbar-color: #dadce0 transparent;
   }
   .sidebar-scroll::-webkit-scrollbar {
     width: 6px;
@@ -85,7 +80,7 @@
     background: transparent;
   }
   .sidebar-scroll::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
+    background: #dadce0;
     border-radius: 9999px;
   }
 }

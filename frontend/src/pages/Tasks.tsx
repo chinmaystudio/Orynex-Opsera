@@ -15,10 +15,10 @@ import {
 
 /* Priority uses the same ring-badge language as StatusBadge / RiskBadge. */
 const PRIORITY_STYLES: Record<string, string> = {
-  low: 'bg-slate-100 text-slate-600 ring-slate-200',
-  medium: 'bg-sky-50 text-sky-700 ring-sky-200',
-  high: 'bg-amber-50 text-amber-700 ring-amber-200',
-  urgent: 'bg-red-50 text-red-700 ring-red-200',
+  low: 'bg-appbg text-muted ring-line',
+  medium: 'bg-primary-50 text-primary-700 ring-primary-200',
+  high: 'bg-[#FEF7E0] text-warning ring-[#FDE293]',
+  urgent: 'bg-[#FCE8E6] text-error ring-[#F2B8B5]',
 }
 
 function PriorityBadge({ priority }: { priority?: string }) {
@@ -184,7 +184,7 @@ export default function Tasks() {
         title="Tasks"
         subtitle="Work assigned to people and AI employees, in one place."
       >
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <div
             className="inline-flex rounded-[10px] border border-line bg-surface p-0.5"
             role="tablist"
@@ -211,7 +211,7 @@ export default function Tasks() {
               </button>
             ))}
           </div>
-          <button className="btn-primary" onClick={() => setShowForm(true)}>
+          <button className="btn-primary min-h-11" onClick={() => setShowForm(true)}>
             <Plus className="h-4 w-4" aria-hidden /> New task
           </button>
         </div>
@@ -250,7 +250,7 @@ export default function Tasks() {
                 key={f.key}
                 onClick={() => setFilter(f.key)}
                 aria-pressed={filter === f.key}
-                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-medium transition focus-ring ${
+                className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition focus-ring ${
                   filter === f.key
                     ? 'border-primary-200 bg-primary-50 text-primary-700'
                     : 'border-line bg-surface text-muted hover:text-ink'
@@ -347,7 +347,7 @@ export default function Tasks() {
               </table>
             </div>
           ) : (
-            <div className="flex gap-4 overflow-x-auto pb-2">
+            <div className="-mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
               {COLUMNS.map((col) => {
                 const colTasks = filtered.filter((t) =>
                   col.statuses.includes(String(t.status)),
@@ -356,7 +356,7 @@ export default function Tasks() {
                   <section
                     key={col.key}
                     aria-label={col.label}
-                    className="w-72 shrink-0"
+                    className="w-[82vw] max-w-80 shrink-0 snap-start sm:w-72"
                   >
                     <h2 className="mb-2 flex items-center justify-between px-1 text-sm font-semibold text-ink">
                       {col.label}
@@ -494,7 +494,7 @@ export default function Tasks() {
             </div>
           </div>
           {saveError && (
-            <p className="mt-3 text-sm font-medium text-red-600">{saveError}</p>
+            <p className="mt-3 text-sm font-medium text-error">{saveError}</p>
           )}
           <div className="mt-5 flex gap-2">
             <button type="submit" className="btn-primary" disabled={saving}>

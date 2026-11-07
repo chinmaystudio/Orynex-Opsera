@@ -106,7 +106,7 @@ export default function Hr() {
             role="tab"
             aria-selected={tab === t}
             onClick={() => setTab(t)}
-            className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+            className={`min-h-11 rounded-lg px-3 py-2 text-sm font-medium transition ${
               tab === t
                 ? 'bg-primary-50 text-primary-700'
                 : 'text-muted hover:text-ink'
@@ -163,8 +163,8 @@ export default function Hr() {
                   }
                 />
               ) : (
-                <div className="card overflow-hidden">
-                  <table className="w-full text-left text-sm">
+                <div className="card overflow-x-auto">
+                  <table className="w-full min-w-[640px] text-left text-sm">
                     <thead>
                       <tr className="border-b border-line bg-appbg text-xs uppercase tracking-wide text-muted">
                         <th className="px-4 py-3 font-medium">Employee</th>

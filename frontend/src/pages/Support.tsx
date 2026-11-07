@@ -31,7 +31,7 @@ export default function Support() {
                   key={f}
                   disabled
                   title="Filters activate when tickets exist"
-                  className={`cursor-not-allowed rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset ${
+                  className={`min-h-11 cursor-not-allowed rounded-full px-3 py-2 text-xs font-medium ring-1 ring-inset ${
                     i === 0
                       ? 'bg-primary-50 text-primary-700 ring-primary-200 opacity-70'
                       : 'bg-surface text-muted ring-line opacity-60'
@@ -43,7 +43,7 @@ export default function Support() {
             </div>
           </div>
           <div className="flex flex-1 flex-col items-center justify-center px-5 py-10 text-center">
-            <LifeBuoy className="mb-3 h-8 w-8 text-slate-300" />
+            <LifeBuoy className="mb-3 h-8 w-8 text-line" />
             <p className="text-sm font-medium text-ink">No tickets</p>
             <p className="mt-1 text-sm text-muted">
               Ticket ingestion arrives with the Support module. Email support
@@ -55,7 +55,7 @@ export default function Support() {
 
         {/* CENTER — conversation */}
         <section className="card flex flex-col items-center justify-center px-6 py-14 text-center">
-          <MessageSquare className="mb-3 h-8 w-8 text-slate-300" />
+          <MessageSquare className="mb-3 h-8 w-8 text-line" />
           <p className="text-sm font-medium text-ink">No conversation selected</p>
           <p className="mt-1 max-w-sm text-sm text-muted">
             When tickets arrive, selecting one opens the full conversation
@@ -70,7 +70,7 @@ export default function Support() {
             <h2 className="text-sm font-semibold text-ink">Customer context</h2>
           </div>
           <div className="flex flex-1 flex-col items-center justify-center px-5 py-10 text-center">
-            <UserRound className="mb-3 h-8 w-8 text-slate-300" />
+            <UserRound className="mb-3 h-8 w-8 text-line" />
             <p className="text-sm font-medium text-ink">No customer in view</p>
             <p className="mt-1 text-sm text-muted">
               The selected customer’s profile, orders and past tickets will

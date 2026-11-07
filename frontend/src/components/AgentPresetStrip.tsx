@@ -19,12 +19,12 @@ export default function AgentPresetStrip({
   const agents = AGENT_PRESETS.filter((a) => a.department === department)
   if (agents.length === 0) return null
   return (
-    <section className="card p-5">
+    <section className="card p-4 sm:p-5">
       <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-base font-semibold text-ink">{title}</h2>
         <Link
           to="/app/ai-workforce"
-          className="inline-flex items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-700"
+          className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-700"
         >
           Open AI Workforce <ArrowRight className="h-4 w-4" />
         </Link>
@@ -42,7 +42,7 @@ export default function AgentPresetStrip({
             <div className="min-w-0">
               <p className="text-sm font-medium text-ink">
                 {agent.name}
-                <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600 ring-1 ring-inset ring-slate-200">
+                <span className="ml-2 rounded-full bg-appbg px-2 py-0.5 text-xs font-medium text-muted ring-1 ring-inset ring-line">
                   Preset
                 </span>
               </p>

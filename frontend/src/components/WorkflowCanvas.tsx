@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import {
-  ArrowDown,
-  ArrowRight,
   Bot,
   Database,
   Mail,
@@ -94,18 +92,14 @@ export const CANONICAL_WORKFLOW: WorkflowNode[] = [
 
 function nodeClasses(node: WorkflowNode, selected: boolean): string {
   const base =
-    'focus-ring w-full rounded-card border p-3.5 text-left transition sm:p-4 '
+    'focus-ring flex min-h-11 w-full items-center gap-3 rounded-2xl border p-4 text-left transition '
   const ring = selected
     ? 'ring-2 ring-primary-500 ring-offset-1 '
-    : 'hover:border-slate-300 '
+    : 'hover:border-primary-200 '
   if (node.type === 'approval') {
-    return (
-      base +
-      ring +
-      'border-amber-300 bg-amber-50 shadow-card'
-    )
+    return base + ring + 'border-[#FDE293] bg-[#FEF7E0]'
   }
-  return base + ring + 'border-line bg-surface shadow-card'
+  return base + ring + 'border-line bg-surface'
 }
 
 function iconClasses(node: WorkflowNode): string {
@@ -113,7 +107,7 @@ function iconClasses(node: WorkflowNode): string {
     case 'trigger':
       return 'bg-primary-600 text-white'
     case 'approval':
-      return 'bg-amber-100 text-amber-700 ring-1 ring-amber-200'
+      return 'bg-[#FEF7E0] text-warning ring-1 ring-[#FDE293]'
     case 'agent':
       return 'bg-primary-50 text-primary-600 ring-1 ring-primary-100'
     default:
@@ -129,41 +123,42 @@ export default function WorkflowCanvas() {
 
   return (
     <div>
-      <div className="flex flex-col gap-0 lg:flex-row lg:items-stretch">
+      {/* Vertical step list: Trigger -> agent steps -> approval gate ->
+          actions, as stacked cards joined by a connecting line. */}
+      <div className="flex flex-col">
         {CANONICAL_WORKFLOW.map((node, i) => {
           const Icon = node.icon
           const isSelected = node.id === selectedId
           return (
-            <div
-              key={node.id}
-              className="flex flex-col lg:flex-1 lg:flex-row lg:items-center"
-            >
+            <div key={node.id}>
               <button
                 type="button"
                 onClick={() => setSelectedId(node.id)}
                 aria-pressed={isSelected}
-                className={nodeClasses(node, isSelected) + ' lg:flex-1'}
+                className={nodeClasses(node, isSelected)}
               >
                 <span
-                  className={`inline-flex h-9 w-9 items-center justify-center rounded-[10px] ${iconClasses(node)}`}
+                  className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-[10px] ${iconClasses(node)}`}
                 >
                   <Icon className="h-5 w-5" />
                 </span>
-                <span className="mt-2.5 block text-sm font-semibold leading-tight text-ink">
-                  {node.title}
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-semibold leading-tight text-ink">
+                    {node.title}
+                  </span>
+                  <span className="mt-0.5 block truncate text-xs text-muted">
+                    {node.subtitle}
+                  </span>
                 </span>
-                <span className="mt-0.5 block text-xs text-muted">
-                  {node.subtitle}
+                <span className="hidden shrink-0 rounded-full bg-appbg px-2 py-0.5 text-xs font-medium text-muted ring-1 ring-inset ring-line sm:inline-flex">
+                  {TYPE_LABELS[node.type]}
                 </span>
               </button>
               {i < CANONICAL_WORKFLOW.length - 1 && (
                 <span
-                  className="flex shrink-0 items-center justify-center py-1 text-slate-300 lg:px-1.5 lg:py-0"
+                  className="ml-[35px] block h-4 w-px bg-line"
                   aria-hidden
-                >
-                  <ArrowDown className="h-5 w-5 lg:hidden" />
-                  <ArrowRight className="hidden h-5 w-5 lg:block" />
-                </span>
+                />
               )}
             </div>
           )

@@ -120,7 +120,7 @@ export default function EngineeringStudio() {
               {engineeringTasks.map((task) => (
                 <li
                   key={task.id ?? task.title}
-                  className="flex items-center gap-4 px-5 py-3.5"
+                  className="flex flex-wrap items-center gap-3 px-4 py-3.5 sm:gap-4 sm:px-5"
                 >
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-ink">

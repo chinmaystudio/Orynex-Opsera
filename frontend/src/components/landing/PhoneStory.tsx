@@ -181,7 +181,7 @@ export function PhoneStoryMobileFallback() {
                   <p className="flex items-center gap-2 text-[15px] font-semibold text-ink">
                     {scene.title}
                     {i === STORY_SCENES.length - 1 && (
-                      <Check className="h-4 w-4 text-emerald-600" />
+                      <Check className="h-4 w-4 text-success" />
                     )}
                   </p>
                   <p className="mt-1 text-sm leading-relaxed text-muted">

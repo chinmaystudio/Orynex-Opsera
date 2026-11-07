@@ -39,6 +39,7 @@ import { api, BackendOfflineError } from '../lib/api'
 import type { CommandResponse } from '../lib/types'
 import { RiskBadge } from './ui'
 import GlobalSearch from './GlobalSearch'
+import MobileBottomNav from './MobileBottomNav'
 
 export interface ModuleDef {
   path: string
@@ -54,13 +55,12 @@ export interface NavGroup {
 const LOGO_SRC = '/9f4ebccd-ad18-4fe6-ac83-73f22f9953f4.png'
 
 /**
- * Grouped sidebar navigation (enterprise UI spec §4A). The same modules as
- * before — same paths, same order within the product — organised into
- * labelled groups instead of one continuous list.
+ * Grouped sidebar navigation — exactly three groups (Main / Work /
+ * System). Same modules and same paths as before.
  */
 export const NAV_GROUPS: NavGroup[] = [
   {
-    label: 'Workspace',
+    label: 'Main',
     items: [
       { path: '/app', label: 'Command Center', icon: Gauge },
       { path: '/app/ai-workforce', label: 'AI Workforce', icon: Bot },
@@ -68,18 +68,13 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    label: 'Business',
+    label: 'Work',
     items: [
       { path: '/app/crm-sales', label: 'CRM & Sales', icon: Users },
       { path: '/app/marketing', label: 'Marketing', icon: Megaphone },
       { path: '/app/finance', label: 'Finance', icon: HandCoins },
       { path: '/app/hr', label: 'Human Resources', icon: Briefcase },
       { path: '/app/support', label: 'Customer Support', icon: Headset },
-    ],
-  },
-  {
-    label: 'Operations',
-    items: [
       {
         path: '/app/projects',
         label: 'Projects & Operations',
@@ -87,26 +82,16 @@ export const NAV_GROUPS: NavGroup[] = [
       },
       { path: '/app/tasks', label: 'Tasks', icon: CheckSquare },
       { path: '/app/approvals', label: 'Approvals', icon: ShieldCheck },
-      { path: '/app/automations', label: 'Automations', icon: Workflow },
     ],
   },
   {
-    label: 'Intelligence',
+    label: 'System',
     items: [
+      { path: '/app/automations', label: 'Automations', icon: Workflow },
       { path: '/app/analytics', label: 'Analytics', icon: BarChart3 },
       { path: '/app/marketplace', label: 'Agent Marketplace', icon: Sparkles },
-    ],
-  },
-  {
-    label: 'Studios',
-    items: [
       { path: '/app/creative-studio', label: 'Creative Studio', icon: Clapperboard },
       { path: '/app/engineering-studio', label: 'Engineering Studio', icon: Code2 },
-    ],
-  },
-  {
-    label: 'Platform',
-    items: [
       { path: '/app/integrations', label: 'Integrations', icon: LayoutGrid },
       { path: '/app/settings', label: 'Settings', icon: Settings },
     ],
@@ -186,7 +171,7 @@ function CommandBar() {
   return (
     <div className="relative min-w-0 flex-1 max-w-xl">
       <form onSubmit={submit} className="relative">
-        <Sparkles className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-accent-500" />
+        <Sparkles className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-primary-600" />
         <input
           value={value}
           onChange={(e) => setValue(e.target.value)}
@@ -197,7 +182,7 @@ function CommandBar() {
         <button
           type="submit"
           disabled={busy || !value.trim()}
-          className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-md bg-primary-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-primary-700 disabled:opacity-50"
+          className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full bg-primary-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-primary-700 disabled:opacity-50"
         >
           {busy ? 'Planning…' : 'Run'}
         </button>
@@ -211,7 +196,7 @@ function CommandBar() {
             </p>
             <button
               onClick={() => setOpen(false)}
-              className="rounded p-0.5 text-slate-400 hover:bg-appbg hover:text-ink"
+              className="rounded p-0.5 text-muted hover:bg-appbg hover:text-ink"
               aria-label="Close plan"
             >
               <X className="h-4 w-4" />
@@ -219,15 +204,15 @@ function CommandBar() {
           </div>
 
           {offline && (
-            <p className="text-sm text-slate-600">
-              <span className="font-medium text-amber-600">Backend offline.</span>{' '}
+            <p className="text-sm text-muted">
+              <span className="font-medium text-warning">Backend offline.</span>{' '}
               The command service at the configured API base URL is unreachable,
               so no plan was generated. Start the backend and try again — nothing
               was executed.
             </p>
           )}
           {error && (
-            <p className="text-sm text-red-600">
+            <p className="text-sm text-error">
               The backend returned an error: {error}. Nothing was executed.
             </p>
           )}
@@ -260,7 +245,7 @@ function CommandBar() {
                             <RiskBadge level={step.risk_level} />
                           )}
                           {step.requires_approval && (
-                            <span className="text-[11px] font-medium text-amber-600">
+                            <span className="text-[11px] font-medium text-warning">
                               Requires approval
                             </span>
                           )}
@@ -332,20 +317,20 @@ function SidebarNav({
                   className={({ isActive }) =>
                     `relative flex items-center gap-3 rounded-[10px] px-3 py-2 text-sm transition ${
                       isActive
-                        ? 'bg-primary-50 font-medium text-primary-700 [&_svg]:text-primary-600'
-                        : 'text-slate-600 hover:bg-appbg hover:text-ink'
+                        ? 'bg-primary-50 font-medium text-primary-600 [&_svg]:text-primary-600'
+                        : 'text-muted hover:bg-appbg hover:text-ink'
                     } ${collapsed ? 'justify-center px-0' : ''}`
                   }
                 >
                   <Icon className="h-[18px] w-[18px] shrink-0 text-muted" />
                   {!collapsed && <span className="truncate">{mod.label}</span>}
                   {!collapsed && showBadge && (
-                    <span className="ml-auto rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-700">
+                    <span className="ml-auto rounded-full bg-warning px-2 py-0.5 text-xs font-semibold text-white">
                       {pendingApprovals}
                     </span>
                   )}
                   {collapsed && showBadge && (
-                    <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-amber-500" />
+                    <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-warning" />
                   )}
                 </NavLink>
               )
@@ -370,13 +355,13 @@ function SidebarBottom({
         to="/app/settings"
         title={collapsed ? 'Help & Documentation' : undefined}
         aria-label="Help and documentation"
-        className="flex items-center gap-3 rounded-[10px] px-3 py-2 text-sm text-slate-600 transition hover:bg-appbg hover:text-ink"
+        className="flex items-center gap-3 rounded-[10px] px-3 py-2 text-sm text-muted transition hover:bg-appbg hover:text-ink"
       >
         <LifeBuoy className="h-[18px] w-[18px] shrink-0 text-muted" />
         {!collapsed && (
           <>
             <span className="truncate">Help & Documentation</span>
-            <span className="ml-auto rounded-full bg-slate-100 px-1.5 py-0.5 text-[10px] font-medium text-muted ring-1 ring-inset ring-line">
+            <span className="ml-auto rounded-full bg-appbg px-1.5 py-0.5 text-[10px] font-medium text-muted ring-1 ring-inset ring-line">
               Soon
             </span>
           </>
@@ -471,8 +456,20 @@ export default function AppShell() {
   const [searchOpen, setSearchOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
   const [pendingApprovals, setPendingApprovals] = useState<number | null>(null)
+  // Icon rail on md viewports; full sidebar on lg+ (unless user collapsed it).
+  const [isRailViewport, setIsRailViewport] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px) and (max-width: 1023.98px)')
+    const update = () => setIsRailViewport(mq.matches)
+    update()
+    mq.addEventListener('change', update)
+    return () => mq.removeEventListener('change', update)
+  }, [])
+
+  const effectiveCollapsed = collapsed || isRailViewport
 
   useEffect(() => {
     let cancelled = false
@@ -512,19 +509,21 @@ export default function AppShell() {
 
   return (
     <div className="flex min-h-screen bg-appbg">
-      {/* Desktop sidebar */}
+      {/* Sidebar: hidden on mobile, icon rail on md, full on lg+ */}
       <aside
-        className={`sticky top-0 hidden h-screen shrink-0 flex-col border-r border-line bg-surface transition-[width] duration-200 lg:flex ${
-          collapsed ? 'w-[72px]' : 'w-[248px]'
+        className={`sticky top-0 hidden h-screen shrink-0 flex-col border-r border-line bg-surface transition-[width] duration-200 md:flex ${
+          effectiveCollapsed ? 'w-[72px]' : 'w-[248px]'
         }`}
       >
         <div className="flex h-16 items-center border-b border-line px-4">
-          <LogoLink collapsed={collapsed} />
+          <LogoLink collapsed={effectiveCollapsed} />
         </div>
-        <SidebarNav collapsed={collapsed} pendingApprovals={pendingApprovals} />
+        <SidebarNav collapsed={effectiveCollapsed} pendingApprovals={pendingApprovals} />
         <SidebarBottom
-          collapsed={collapsed}
-          onToggleCollapse={() => setCollapsed((c) => !c)}
+          collapsed={effectiveCollapsed}
+          onToggleCollapse={
+            isRailViewport ? undefined : () => setCollapsed((c) => !c)
+          }
         />
       </aside>
 
@@ -563,7 +562,7 @@ export default function AppShell() {
           <button
             onClick={() => setMobileOpen(true)}
             aria-label="Open navigation"
-            className="focus-ring shrink-0 rounded-lg p-2 text-muted transition hover:bg-appbg hover:text-ink lg:hidden"
+            className="focus-ring shrink-0 rounded-lg p-2 text-muted transition hover:bg-appbg hover:text-ink md:hidden"
           >
             <Menu className="h-5 w-5" />
           </button>
@@ -573,7 +572,7 @@ export default function AppShell() {
             className="hidden shrink-0 items-center gap-1.5 text-sm md:flex"
           >
             <span className="font-semibold tracking-wide text-muted">OPRAQ</span>
-            <ChevronRight className="h-4 w-4 text-slate-300" />
+            <ChevronRight className="h-4 w-4 text-line" />
             <span className="truncate font-medium text-ink">{moduleLabel}</span>
           </nav>
 
@@ -652,7 +651,7 @@ export default function AppShell() {
             >
               <ShieldCheck className="h-5 w-5" />
               {pendingApprovals !== null && pendingApprovals > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-amber-500 px-1 text-[10px] font-bold text-white">
+                <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-warning px-1 text-[10px] font-bold text-white">
                   {pendingApprovals}
                 </span>
               )}
@@ -680,15 +679,20 @@ export default function AppShell() {
           </div>
         </header>
 
-        <main className="w-full flex-1 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <main className="w-full flex-1 px-4 pb-24 pt-6 sm:px-6 lg:px-8 lg:py-8">
           <Outlet />
         </main>
 
-        <footer className="border-t border-line bg-surface px-6 py-3 text-center text-xs text-muted">
+        <footer className="border-t border-line bg-surface px-6 pb-24 pt-3 text-center text-xs text-muted lg:pb-3">
           OrynexOpraq — part of the ORYNEX ecosystem. OrynexAegis provides the
           Agent OS; ORYNEX CORE connects everything.
         </footer>
       </div>
+
+      <MobileBottomNav
+        pendingApprovals={pendingApprovals}
+        onMore={() => setMobileOpen(true)}
+      />
 
       <GlobalSearch
         open={searchOpen}

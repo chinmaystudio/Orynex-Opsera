@@ -138,7 +138,7 @@ export default function CrmSales() {
         title="CRM & Sales"
         subtitle="Pipeline, customers and follow-ups in one workspace."
       >
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <div
             className="inline-flex rounded-[10px] border border-line bg-surface p-0.5"
             role="tablist"
@@ -169,14 +169,14 @@ export default function CrmSales() {
               <Table2 className="h-4 w-4" /> Table
             </button>
           </div>
-          <button className="btn-primary" onClick={() => setShowForm((s) => !s)}>
+          <button className="btn-primary min-h-11" onClick={() => setShowForm((s) => !s)}>
             <Plus className="h-4 w-4" /> New lead
           </button>
         </div>
       </PageHeader>
 
       {showForm && (
-        <form onSubmit={handleCreate} className="card mb-6 p-5">
+        <form onSubmit={handleCreate} className="card mb-6 p-4 sm:p-5">
           <h2 className="mb-1 text-base font-semibold text-ink">Create lead</h2>
           <p className="mb-4 text-sm text-muted">
             {orgId
@@ -253,7 +253,7 @@ export default function CrmSales() {
             </div>
           </div>
           {saveError && (
-            <p className="mt-3 text-sm font-medium text-red-600">{saveError}</p>
+            <p className="mt-3 text-sm font-medium text-error">{saveError}</p>
           )}
           <div className="mt-4 flex gap-2">
             <button type="submit" className="btn-primary" disabled={saving || !orgId}>
@@ -286,16 +286,16 @@ export default function CrmSales() {
 
       {!loading && !offline && !error && data && (
         <>
-          <div className="mb-6 grid gap-4 sm:grid-cols-3">
-            <div className="card p-4">
+          <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-3">
+            <div className="card p-4 sm:p-5">
               <p className="text-xs font-medium uppercase tracking-wide text-muted">Leads</p>
               <p className="mt-1 text-2xl font-semibold text-ink">{data.leads.length}</p>
             </div>
-            <div className="card p-4">
+            <div className="card p-4 sm:p-5">
               <p className="text-xs font-medium uppercase tracking-wide text-muted">Open pipeline value</p>
               <p className="mt-1 text-2xl font-semibold text-ink">{formatMoney(openValue)}</p>
             </div>
-            <div className="card p-4">
+            <div className="card p-4 sm:p-5">
               <p className="text-xs font-medium uppercase tracking-wide text-muted">Customers</p>
               <p className="mt-1 text-2xl font-semibold text-ink">{data.customers.length}</p>
             </div>
@@ -317,13 +317,13 @@ export default function CrmSales() {
               }
             />
           ) : view === 'pipeline' ? (
-            <div className="flex gap-3 overflow-x-auto pb-2">
+            <div className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2 sm:mx-0 sm:px-0">
               {STAGES.map((stageDef) => {
                 const column = leads.filter(
                   (l) => String(l.stage ?? 'new') === stageDef.key,
                 )
                 return (
-                  <div key={stageDef.key} className="w-64 shrink-0">
+                  <div key={stageDef.key} className="w-[78vw] max-w-72 shrink-0 snap-start sm:w-64">
                     <div className="mb-2 flex items-center justify-between px-1">
                       <h3 className="text-xs font-semibold uppercase tracking-wide text-muted">
                         {stageDef.label}
@@ -362,8 +362,8 @@ export default function CrmSales() {
               })}
             </div>
           ) : (
-            <div className="card overflow-hidden">
-              <table className="w-full text-left text-sm">
+            <div className="card overflow-x-auto">
+              <table className="w-full min-w-[680px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-line bg-appbg text-xs uppercase tracking-wide text-muted">
                     <th className="px-4 py-3 font-medium">Lead</th>
@@ -408,8 +408,8 @@ export default function CrmSales() {
               description="Customer records appear here when they are created through the API or when leads convert. Contact history will build up on each customer profile."
             />
           ) : (
-            <div className="card overflow-hidden">
-              <table className="w-full text-left text-sm">
+            <div className="card overflow-x-auto">
+              <table className="w-full min-w-[680px] text-left text-sm">
                 <thead>
                   <tr className="border-b border-line bg-appbg text-xs uppercase tracking-wide text-muted">
                     <th className="px-4 py-3 font-medium">Customer</th>

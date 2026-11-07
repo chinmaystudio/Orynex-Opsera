@@ -85,7 +85,7 @@ export default function WorkforceSection() {
 
         {/* Realistic workforce preview, as it appears in the product */}
         <div className="lg:col-span-7">
-          <div className="overflow-hidden rounded-xl border border-line bg-white shadow-[0_24px_50px_-32px_rgba(23,23,23,0.3)]">
+          <div className="overflow-hidden rounded-xl border border-line bg-white">
             <div className="flex items-center justify-between border-b border-line px-5 py-3.5">
               <p className="text-sm font-semibold text-ink">AI Workforce</p>
               <p className="text-xs text-muted">
@@ -112,8 +112,8 @@ export default function WorkforceSection() {
                       aria-hidden="true"
                       className={`h-1.5 w-1.5 rounded-full ${
                         member.status === 'Active'
-                          ? 'bg-emerald-500'
-                          : 'bg-slate-300'
+                          ? 'bg-success'
+                          : 'bg-line'
                       }`}
                     />
                     {member.status}

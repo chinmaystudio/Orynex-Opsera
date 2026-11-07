@@ -131,7 +131,7 @@ export function EmptyState({
 }) {
   return (
     <div className="card flex flex-col items-center justify-center px-6 py-14 text-center">
-      <Icon className="mb-3 h-8 w-8 text-slate-300" />
+      <Icon className="mb-3 h-8 w-8 text-line" />
       <p className="text-sm font-medium text-ink">{title}</p>
       {description && (
         <p className="mt-1 max-w-md text-sm text-muted">{description}</p>
@@ -152,7 +152,7 @@ export function ErrorState({
 }) {
   return (
     <div className="card flex flex-col items-center justify-center px-6 py-14 text-center">
-      <span className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-amber-50 ring-1 ring-amber-100">
+      <span className="mb-3 flex h-11 w-11 items-center justify-center rounded-full bg-[#FEF7E0] ring-1 ring-[#FDE293]">
         <AlertTriangle className="h-5 w-5 text-warning" />
       </span>
       <p className="text-sm font-medium text-ink">{title}</p>
@@ -173,10 +173,10 @@ export function ErrorState({
 /* ------------------------------------------------------------------ */
 
 const RISK_STYLES: Record<string, string> = {
-  low: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  medium: 'bg-sky-50 text-sky-700 ring-sky-200',
-  high: 'bg-amber-50 text-amber-700 ring-amber-200',
-  critical: 'bg-red-50 text-red-700 ring-red-200',
+  low: 'bg-[#E6F4EA] text-success ring-[#CEEAD6]',
+  medium: 'bg-primary-50 text-primary-700 ring-primary-200',
+  high: 'bg-[#FEF7E0] text-warning ring-[#FDE293]',
+  critical: 'bg-[#FCE8E6] text-error ring-[#F2B8B5]',
 }
 
 export function RiskBadge({ level }: { level: string }) {
@@ -191,23 +191,23 @@ export function RiskBadge({ level }: { level: string }) {
 }
 
 const STATUS_STYLES: Record<string, string> = {
-  pending: 'bg-slate-100 text-slate-600 ring-slate-200',
-  assigned: 'bg-sky-50 text-sky-700 ring-sky-200',
+  pending: 'bg-appbg text-muted ring-line',
+  assigned: 'bg-primary-50 text-primary-700 ring-primary-200',
   in_progress: 'bg-primary-50 text-primary-700 ring-primary-200',
-  waiting_approval: 'bg-amber-50 text-amber-700 ring-amber-200',
-  blocked: 'bg-red-50 text-red-700 ring-red-200',
-  completed: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  approved: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  rejected: 'bg-red-50 text-red-700 ring-red-200',
-  failed: 'bg-red-50 text-red-700 ring-red-200',
-  active: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  idle: 'bg-slate-100 text-slate-600 ring-slate-200',
-  not_configured: 'bg-slate-100 text-slate-600 ring-slate-200',
-  // Risk levels, so StatusBadge can render risk values too (spec §25).
-  low: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
-  medium: 'bg-sky-50 text-sky-700 ring-sky-200',
-  high: 'bg-amber-50 text-amber-700 ring-amber-200',
-  critical: 'bg-red-50 text-red-700 ring-red-200',
+  waiting_approval: 'bg-[#FEF7E0] text-warning ring-[#FDE293]',
+  blocked: 'bg-[#FCE8E6] text-error ring-[#F2B8B5]',
+  completed: 'bg-[#E6F4EA] text-success ring-[#CEEAD6]',
+  approved: 'bg-[#E6F4EA] text-success ring-[#CEEAD6]',
+  rejected: 'bg-[#FCE8E6] text-error ring-[#F2B8B5]',
+  failed: 'bg-[#FCE8E6] text-error ring-[#F2B8B5]',
+  active: 'bg-[#E6F4EA] text-success ring-[#CEEAD6]',
+  idle: 'bg-appbg text-muted ring-line',
+  not_configured: 'bg-appbg text-muted ring-line',
+  // Risk levels, so StatusBadge can render risk values too.
+  low: 'bg-[#E6F4EA] text-success ring-[#CEEAD6]',
+  medium: 'bg-primary-50 text-primary-700 ring-primary-200',
+  high: 'bg-[#FEF7E0] text-warning ring-[#FDE293]',
+  critical: 'bg-[#FCE8E6] text-error ring-[#F2B8B5]',
 }
 
 export function StatusBadge({ status }: { status: string }) {
